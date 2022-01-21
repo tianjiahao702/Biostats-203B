@@ -128,7 +128,7 @@ b. number of rows in this datafile
 c. number of unique patients
 
 ```{bash}
-   zcat /mnt/mimiciv/1.0/core/admissions.csv.gz | awk -F, '{ print $1 }' |      sort | uniq | wc -l
+   zcat /mnt/mimiciv/1.0/core/admissions.csv.gz | awk -F, '{ print $1 }' | sort | uniq | wc -l
 ```
 
 
@@ -138,8 +138,7 @@ c. number of unique patients
 possible values of each variable
 `admission_type`
 ```{bash}
-   zcat /mnt/mimiciv/1.0/core/admissions.csv.gz | awk -F '{ print $1 }' |
-   sort | uniq -c | wc -l
+   zcat /mnt/mimiciv/1.0/core/admissions.csv.gz | awk -F '{ print $1 }' | sort | uniq -c | wc -l
 ```
 
 
@@ -160,13 +159,14 @@ Complete the following loop to tabulate the number of times each of the four cha
 
 **Solution:**
 
-    ```{bash, eval=FALSE}
-    wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
+```{bash, eval=FALSE}
+     wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
     for char in Elizabeth Jane Lydia Darcy
     do
       echo $char:
+      #put line
     done
-    ```
+```
 
 2. What's the difference between the following two commands?
     ```{bash eval=FALSE}
@@ -198,3 +198,11 @@ Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this sh
 ### Q5. More fun with Linux
 
 Try following commands in Bash and interpret the results: `cal`, `cal 2021`, `cal 9 1752` (anything unusual?), `date`, `hostname`, `arch`, `uname -a`, `uptime`, `who am i`, `who`, `w`, `id`, `last | head`, `echo {con,pre}{sent,fer}{s,ed}`, `time sleep 5`, `history | tail`.
+
+**Solution:**
+
+`cal` only shows the current year, current month, and today's day.
+
+`cal 2021` shows the whole 12 months of 2021.
+
+`cal 9 1752` shows the year 1752, the month of September.

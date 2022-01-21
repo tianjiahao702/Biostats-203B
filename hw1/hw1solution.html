@@ -321,14 +321,13 @@ pre code {
 <ol start="3" style="list-style-type: lower-alpha">
 <li>number of unique patients</li>
 </ol>
-<pre class="bash"><code>   zcat /mnt/mimiciv/1.0/core/admissions.csv.gz | awk -F, &#39;{ print $1 }&#39; |      sort | uniq | wc -l</code></pre>
+<pre class="bash"><code>   zcat /mnt/mimiciv/1.0/core/admissions.csv.gz | awk -F, &#39;{ print $1 }&#39; | sort | uniq | wc -l</code></pre>
 <pre><code>## 256879</code></pre>
 <ol start="6" style="list-style-type: decimal">
 <li>What are the possible values taken by each of the variable <code>admission_type</code>, <code>admission_location</code>, <code>insurance</code>, and <code>ethnicity</code>? Also report the count for each unique value of these variables. (Hint: combine Linux commands <code>zcat</code>, <code>head</code>/<code>tail</code>, <code>awk</code>, <code>uniq -c</code>, <code>wc</code>, and so on.)</li>
 </ol>
 <p><strong>Solution:</strong> possible values of each variable <code>admission_type</code></p>
-<pre class="bash"><code>   zcat /mnt/mimiciv/1.0/core/admissions.csv.gz | awk -F &#39;{ print $1 }&#39; |
-   sort | uniq -c | wc -l</code></pre>
+<pre class="bash"><code>   zcat /mnt/mimiciv/1.0/core/admissions.csv.gz | awk -F &#39;{ print $1 }&#39; | sort | uniq -c | wc -l</code></pre>
 <pre><code>## Usage: awk [POSIX or GNU style options] -f progfile [--] file ...
 ## Usage: awk [POSIX or GNU style options] [--] &#39;program&#39; file ...
 ## POSIX options:       GNU long options: (standard)
@@ -376,13 +375,12 @@ pre code {
 <p><strong>Solution:</strong> <code>wget -nc</code> is the non-interactive network downloader which is used to download files from the server even when the user has not logged on to the system and it can work in the background without hindering the current process.</p>
 <p>Complete the following loop to tabulate the number of times each of the four characters is mentioned using Linux commands.</p>
 <p><strong>Solution:</strong></p>
-<pre><code>```bash
-wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
-for char in Elizabeth Jane Lydia Darcy
-do
-  echo $char:
-done
-```</code></pre>
+<pre class="bash"><code>     wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
+    for char in Elizabeth Jane Lydia Darcy
+    do
+      echo $char:
+      #put line
+    done</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li><p>What’s the difference between the following two commands?</p>
 <pre class="bash"><code>echo &#39;hello, world&#39; &gt; test1.txt</code></pre>
@@ -404,6 +402,10 @@ head -n &quot;$2&quot; &quot;$1&quot; | tail -n &quot;$3&quot;</code></pre>
 <div id="q5.-more-fun-with-linux" class="section level3">
 <h3>Q5. More fun with Linux</h3>
 <p>Try following commands in Bash and interpret the results: <code>cal</code>, <code>cal 2021</code>, <code>cal 9 1752</code> (anything unusual?), <code>date</code>, <code>hostname</code>, <code>arch</code>, <code>uname -a</code>, <code>uptime</code>, <code>who am i</code>, <code>who</code>, <code>w</code>, <code>id</code>, <code>last | head</code>, <code>echo {con,pre}{sent,fer}{s,ed}</code>, <code>time sleep 5</code>, <code>history | tail</code>.</p>
+<p><strong>Solution:</strong></p>
+<p><code>cal</code> only shows the current year, current month, and today’s day.</p>
+<p><code>cal 2021</code> shows the whole 12 months of 2021.</p>
+<p><code>cal 9 1752</code> shows the year 1752, the month of September.</p>
 </div>
 </div>
 
