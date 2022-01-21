@@ -133,12 +133,13 @@ c. number of unique patients
 
 
 6. What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq -c`, `wc`, and so on.)
-
+cle
 **Solution:** 
 possible values of each variable
 `admission_type`
 ```{bash}
-   zcat /mnt/mimiciv/1.0/core/admissions.csv.gz | awk -F '{ print $1 }' | sort | uniq -c | wc -l
+zcat /mnt/mimiciv/1.0/core/admissions.csv.gz |sed '1d'|
+awk -F, '{print $6}'| sort | uniq -c
 ```
 
 
@@ -160,13 +161,16 @@ Complete the following loop to tabulate the number of times each of the four cha
 **Solution:**
 
 ```{bash, eval=FALSE}
-     wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
+wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
     for char in Elizabeth Jane Lydia Darcy
     do
-      echo $char:
-      #put line
+     echo $char:
+     gerp -o -i $char pg4267.txt | wc -l
     done
+    
 ```
+
+
 
 2. What's the difference between the following two commands?
     ```{bash eval=FALSE}
