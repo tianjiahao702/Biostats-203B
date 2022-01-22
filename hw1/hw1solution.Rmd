@@ -217,8 +217,8 @@ Using `chmod` make the file executable by the owner, and run
 **Solution:** 
 
     ```{bash eval=T}
-    #chmod 700 ./middle.sh
-    #./middle.sh pg42671.txt 20 5
+    chmod 751 ~/203b-hw/hw1/middle.sh pg42671.txt
+    ~/203b-hw/hw1/middle.sh pg42671.txt 20 5
     ```
 
 Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
