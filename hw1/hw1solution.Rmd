@@ -134,12 +134,28 @@ c. number of unique patients
 
 6. What are the possible values taken by each of the variable `admission_type`, `admission_location`, `insurance`, and `ethnicity`? Also report the count for each unique value of these variables. (Hint: combine Linux commands `zcat`, `head`/`tail`, `awk`, `uniq -c`, `wc`, and so on.)
 cle
+
+
 **Solution:** 
-possible values of each variable
-`admission_type`
+possible values of `admission_type`
 ```{bash}
 zcat /mnt/mimiciv/1.0/core/admissions.csv.gz |sed '1d'|
 awk -F, '{print $6}'| sort | uniq -c
+```
+
+**Solution:** 
+possible values of `insurance`
+```{bash}
+zcat /mnt/mimiciv/1.0/core/admissions.csv.gz |sed '1d'|
+awk -F, '{print $9}'| sort | uniq -c
+```
+
+
+**Solution:** 
+possible values of `ethnicity`
+```{bash}
+zcat /mnt/mimiciv/1.0/core/admissions.csv.gz |sed '1d'|
+awk -F, '{print $12}'| sort | uniq -c
 ```
 
 
@@ -160,13 +176,13 @@ Complete the following loop to tabulate the number of times each of the four cha
 
 **Solution:**
 
-```{bash, eval=FALSE}
-wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
+```{bash, eval=T}
+    wget -nc http://www.gutenberg.org/cache/epub/42671/pg42671.txt
     for char in Elizabeth Jane Lydia Darcy
     do
-     echo $char:
-     gerp -o -i $char pg4267.txt | wc -l
-    done
+      echo $char:
+grep -o -i $char pg42671.txt | wc -l
+  done
     
 ```
 
@@ -187,17 +203,35 @@ Both command will create these two words "hello, world" to a file. For the `>` c
 
 
 3. Using your favorite text editor (e.g., `vi`), type the following and save the file as `middle.sh`:
-    ```{bash eval=FALSE}
-    #!/bin/sh
-    # Select lines from the middle of a file.
-    # Usage: bash middle.sh filename end_line num_lines
-    head -n "$2" "$1" | tail -n "$3"
-    ```
+
+```{bash eval=FALSE}
+#!/bin/sh
+# Select lines from the middle of a file.
+# Usage: bash middle.sh filename end_line num_lines
+head -n "$2" "$1" | tail -n "$3"
+```
+
+
 Using `chmod` make the file executable by the owner, and run 
-    ```{bash eval=FALSE}
-    ./middle.sh pg42671.txt 20 5
+    
+**Solution:** 
+
+    ```{bash eval=T}
+    #chmod 700 ./middle.sh
+    #./middle.sh pg42671.txt 20 5
     ```
+
 Explain the output. Explain the meaning of `"$1"`, `"$2"`, and `"$3"` in this shell script. Why do we need the first line of the shell script?
+
+**Solution:**
+
+"$1" is the first element of the input： pg42671.txt
+
+"$2" is the second element of the input: 20
+
+"$3" is the third element of the input: 5
+
+The first line of the shell script -- #!/bin/sh -- means that the script should run with bash. It tells the server what program it should use to run the shell script.
 
 ### Q5. More fun with Linux
 
