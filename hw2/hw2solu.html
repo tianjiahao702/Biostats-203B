@@ -217,7 +217,7 @@ library(lubridate)</code></pre>
 if (str_detect(os, &quot;Linux&quot;)) {
   mimic_path &lt;- &quot;/mnt/mimiciv/1.0&quot;
 } else if (str_detect(os, &quot;macOS&quot;)) {
-  mimic_path &lt;- &quot;/Users/huazhou/Documents/Box Sync/MIMIC/mimic-iv-1.0&quot;
+  mimic_path &lt;- &quot;/users/huazhou/Documents/Box Sync/MIMIC/mimi-iv-1.0&quot;
 }</code></pre>
 <p>In this exercise, we use tidyverse (ggpot2, dplyr, etc) to explore the <a href="https://mimic.mit.edu/docs/iv/">MIMIC-IV</a> data introduced in <a href="https://ucla-biostat-203b.github.io/2022winter/hw/hw1/hw1.html">homework 1</a> and to build a cohort of ICU stays.</p>
 <pre class="r"><code># tree -s -L 2 /Users/huazhou/Documents/Box\ Sync/MIMIC/mimic-iv-1.0
@@ -266,6 +266,33 @@ system(str_c(&quot;tree -s -L 2 &quot;, shQuote(mimic_path)), intern = TRUE)</co
 <p>There are quite a few utilities in R for reading plain text data files. Let us test the speed of reading a moderate sized compressed csv file, <code>admissions.csv.gz</code>, by three programs: <code>read.csv</code> in base R, <code>read_csv</code> in tidyverse, and <code>fread</code> in the popular data.table package.</p>
 <p>Which function is fastest? Is there difference in the (default) parsed data types? (Hint: R function <code>system.time</code> measures run times.)</p>
 <p>For later questions, we stick to the tidyverse.</p>
+<p><strong>Solution:</strong></p>
+<pre class="r"><code>system.time({
+  read.csv(gzfile( &quot;/mnt/mimiciv/1.0/core/admissions.csv.gz&quot;))
+  })</code></pre>
+<pre><code>##    user  system elapsed 
+##  39.579   0.366  39.955</code></pre>
+<pre class="r"><code>system.time({
+  read_csv(gzfile( &quot;/mnt/mimiciv/1.0/core/admissions.csv.gz&quot;))
+  })</code></pre>
+<pre><code>## Rows: 523740 Columns: 15</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (7): admission_type, admission_location, discharge_location, insurance,...
+## dbl  (3): subject_id, hadm_id, hospital_expire_flag
+## dttm (5): admittime, dischtime, deathtime, edregtime, edouttime</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre><code>##    user  system elapsed 
+##   3.322   0.179   2.101</code></pre>
+<pre class="r"><code>system.time({
+  fread(&quot;/mnt/mimiciv/1.0/core/admissions.csv.gz&quot;)
+  })</code></pre>
+<pre><code>##    user  system elapsed 
+##   1.710   0.106   0.949</code></pre>
+<p><strong>Solution:</strong></p>
+<p><code>fread</code> is the fastest one, the second one is <code>read_cvs</code>, the slowest one is <code>read.cvs</code>.</p>
 </div>
 <div id="q2.-icu-stays" class="section level2">
 <h2>Q2. ICU stays</h2>
@@ -412,38 +439,38 @@ system(str_c(&quot;tree -s -L 2 &quot;, shQuote(mimic_path)), intern = TRUE)</co
 <pre class="r"><code>system(
   str_c(
     &quot;zcat &lt; &quot;, 
-    shQuote(str_c(mimic_path, &quot;/icu/chartevents.csv.gz&quot;)), 
+    shQuote(str_c(mimic_path, &quot;/icu/chartevents_filtered_itemid.csv.gz&quot;)), 
     &quot; | head&quot;), 
   intern = TRUE
 )</code></pre>
-<pre><code>##  [1] &quot;subject_id,hadm_id,stay_id,charttime,storetime,itemid,value,valuenum,valueuom,warning&quot;
-##  [2] &quot;10003700,28623837,30600691,2165-04-24 05:10:00,2165-04-24 05:11:00,228236,0,0,,0&quot;     
-##  [3] &quot;10003700,28623837,30600691,2165-04-24 05:12:00,2165-04-24 05:14:00,225067,0,0,,0&quot;     
-##  [4] &quot;10003700,28623837,30600691,2165-04-24 05:12:00,2165-04-24 05:14:00,225070,1,1,,0&quot;     
-##  [5] &quot;10003700,28623837,30600691,2165-04-24 05:12:00,2165-04-24 05:14:00,225076,1,1,,0&quot;     
-##  [6] &quot;10003700,28623837,30600691,2165-04-24 05:12:00,2165-04-24 05:14:00,225078,1,1,,0&quot;     
-##  [7] &quot;10003700,28623837,30600691,2165-04-24 05:12:00,2165-04-24 05:14:00,225086,1,1,,0&quot;     
-##  [8] &quot;10003700,28623837,30600691,2165-04-24 05:12:00,2165-04-24 05:14:00,225091,1,1,,0&quot;     
-##  [9] &quot;10003700,28623837,30600691,2165-04-24 05:12:00,2165-04-24 05:14:00,225103,1,1,,0&quot;     
-## [10] &quot;10003700,28623837,30600691,2165-04-24 05:12:00,2165-04-24 05:14:00,225106,1,1,,0&quot;</code></pre>
+<pre><code>##  [1] &quot;subject_id,hadm_id,stay_id,charttime,itemid,valuenum&quot;      
+##  [2] &quot;10003700,28623837,30600691,2165-04-24 05:28:00,220179,152&quot; 
+##  [3] &quot;10003700,28623837,30600691,2165-04-24 05:28:00,220181,110&quot; 
+##  [4] &quot;10003700,28623837,30600691,2165-04-24 05:30:00,220045,65&quot;  
+##  [5] &quot;10003700,28623837,30600691,2165-04-24 05:30:00,220210,14&quot;  
+##  [6] &quot;10003700,28623837,30600691,2165-04-24 05:38:00,223761,97.6&quot;
+##  [7] &quot;10003700,28623837,30600691,2165-04-24 06:00:00,220045,56&quot;  
+##  [8] &quot;10003700,28623837,30600691,2165-04-24 06:00:00,220179,126&quot; 
+##  [9] &quot;10003700,28623837,30600691,2165-04-24 06:00:00,220181,88&quot;  
+## [10] &quot;10003700,28623837,30600691,2165-04-24 06:00:00,220210,14&quot;</code></pre>
 <p><code>d_items.csv.gz</code> (<a href="https://mimic.mit.edu/docs/iv/modules/icu/d_items/" class="uri">https://mimic.mit.edu/docs/iv/modules/icu/d_items/</a>) is the dictionary for the <code>itemid</code> in <code>chartevents.csv.gz</code>.</p>
 <pre class="r"><code>system(
   str_c(
     &quot;zcat &lt; &quot;, 
-    shQuote(str_c(mimic_path, &quot;/icu/d_items.csv.gz&quot;)), 
+    shQuote(str_c(mimic_path, &quot;/icu/chartevents_filtered_itemid.csv.gz&quot;)), 
     &quot; | head&quot;), 
   intern = TRUE
 )</code></pre>
-<pre><code>##  [1] &quot;itemid,label,abbreviation,linksto,category,unitname,param_type,lownormalvalue,highnormalvalue&quot;   
-##  [2] &quot;220003,ICU Admission date,ICU Admission date,datetimeevents,ADT,,Date and time,,&quot;                
-##  [3] &quot;220045,Heart Rate,HR,chartevents,Routine Vital Signs,bpm,Numeric,,&quot;                              
-##  [4] &quot;220046,Heart rate Alarm - High,HR Alarm - High,chartevents,Alarms,bpm,Numeric,,&quot;                 
-##  [5] &quot;220047,Heart Rate Alarm - Low,HR Alarm - Low,chartevents,Alarms,bpm,Numeric,,&quot;                   
-##  [6] &quot;220048,Heart Rhythm,Heart Rhythm,chartevents,Routine Vital Signs,,Text,,&quot;                        
-##  [7] &quot;220050,Arterial Blood Pressure systolic,ABPs,chartevents,Routine Vital Signs,mmHg,Numeric,90,140&quot;
-##  [8] &quot;220051,Arterial Blood Pressure diastolic,ABPd,chartevents,Routine Vital Signs,mmHg,Numeric,60,90&quot;
-##  [9] &quot;220052,Arterial Blood Pressure mean,ABPm,chartevents,Routine Vital Signs,mmHg,Numeric,,&quot;         
-## [10] &quot;220056,Arterial Blood Pressure Alarm - Low,ABP Alarm - Low,chartevents,Alarms,mmHg,Numeric,,&quot;</code></pre>
+<pre><code>##  [1] &quot;subject_id,hadm_id,stay_id,charttime,itemid,valuenum&quot;      
+##  [2] &quot;10003700,28623837,30600691,2165-04-24 05:28:00,220179,152&quot; 
+##  [3] &quot;10003700,28623837,30600691,2165-04-24 05:28:00,220181,110&quot; 
+##  [4] &quot;10003700,28623837,30600691,2165-04-24 05:30:00,220045,65&quot;  
+##  [5] &quot;10003700,28623837,30600691,2165-04-24 05:30:00,220210,14&quot;  
+##  [6] &quot;10003700,28623837,30600691,2165-04-24 05:38:00,223761,97.6&quot;
+##  [7] &quot;10003700,28623837,30600691,2165-04-24 06:00:00,220045,56&quot;  
+##  [8] &quot;10003700,28623837,30600691,2165-04-24 06:00:00,220179,126&quot; 
+##  [9] &quot;10003700,28623837,30600691,2165-04-24 06:00:00,220181,88&quot;  
+## [10] &quot;10003700,28623837,30600691,2165-04-24 06:00:00,220210,14&quot;</code></pre>
 <ol style="list-style-type: decimal">
 <li><p>We are interested in the vitals for ICU patients: heart rate (220045), mean non-invasive blood pressure (220181), systolic non-invasive blood pressure (220179), body temperature in Fahrenheit (223761), and respiratory rate (220210). Retrieve a subset of <code>chartevents.csv.gz</code> only containing these items for the patients in <code>icustays_tble</code> as a tibble <code>chartevents_tble</code>.</p></li>
 <li><p>Further restrict <code>chartevents_tble</code> to the first vital measurement during the ICU stay.</p></li>

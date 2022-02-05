@@ -25,7 +25,7 @@ os <- sessionInfo()$running
 if (str_detect(os, "Linux")) {
   mimic_path <- "/mnt/mimiciv/1.0"
 } else if (str_detect(os, "macOS")) {
-  mimic_path <- "/Users/huazhou/Documents/Box Sync/MIMIC/mimic-iv-1.0"
+  mimic_path <- "/users/huazhou/Documents/Box Sync/MIMIC/mimi-iv-1.0"
 }
 ```
 
@@ -43,6 +43,31 @@ There are quite a few utilities in R for reading plain text data files. Let us t
 Which function is fastest? Is there difference in the (default) parsed data types? (Hint: R function `system.time` measures run times.)
 
 For later questions, we stick to the tidyverse.
+
+**Solution:**
+
+```{r}
+system.time({
+  read.csv(gzfile( "/mnt/mimiciv/1.0/core/admissions.csv.gz"))
+  })
+```
+
+```{r}
+system.time({
+  read_csv(gzfile( "/mnt/mimiciv/1.0/core/admissions.csv.gz"))
+  })
+```
+
+```{r}
+system.time({
+  fread("/mnt/mimiciv/1.0/core/admissions.csv.gz")
+  })
+```
+
+**Solution:**
+
+`fread` is the fastest one, the second one is `read_cvs`, the slowest one is `read.cvs`.
+
 
 ## Q2. ICU stays
 
@@ -149,7 +174,7 @@ system(
 system(
   str_c(
     "zcat < ", 
-    shQuote(str_c(mimic_path, "/icu/chartevents.csv.gz")), 
+    shQuote(str_c(mimic_path, "/icu/chartevents_filtered_itemid.csv.gz")), 
     " | head"), 
   intern = TRUE
 )
@@ -159,7 +184,7 @@ system(
 system(
   str_c(
     "zcat < ", 
-    shQuote(str_c(mimic_path, "/icu/d_items.csv.gz")), 
+    shQuote(str_c(mimic_path, "/icu/chartevents_filtered_itemid.csv.gz")), 
     " | head"), 
   intern = TRUE
 )
