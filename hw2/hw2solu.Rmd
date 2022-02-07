@@ -142,9 +142,8 @@ system(
 **Solution:**
 
 ```{r}
-admissions_tab <- read_csv(str_c(
-  "/mnt/mimiciv/1.0/core/admissions.csv.gz"
-  )) %>%
+admissions_tab <- read_csv(
+  str_c("/mnt/mimiciv/1.0/core/admissions.csv.gz")) %>%
   print(width = Inf)
 ```
 
@@ -242,7 +241,49 @@ system(
 
 1. Import `patients.csv.gz` (<https://mimic.mit.edu/docs/iv/modules/core/patients/>) as a tibble `patients_tble` and only keep the patients who have a match in `icustays_tble` (according to `subject_id`).
 
+**Solution:**
+
+```{r}
+patients_tab <- read_csv(str_c(mimic_path, "/core/patients.csv.gz")) %>%
+  print(width = Inf)
+```
+
 2. Summarize variables `gender` and `anchor_age`, and explain any patterns you see.
+
+**Solution: Gender**
+
+In this dataset, there more females than males.
+
+```{r}
+patients_tab %>%
+  ggplot(aes(x = gender)) +
+  geom_bar() +
+  scale_x_discrete(labels = c("Female", "Male"))
+```
+
+**Solution: anchor_age**  
+
+In this dataset, there are lots of patients were age 0 in their anchor year. And at ages between 
+1-17 there were no patients. The anchor age of 0 may be the missing data.
+
+```{r}
+patients_tab %>%
+  ggplot(aes(x = anchor_age)) +
+  geom_histogram(bins = 30) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) +
+  xlab("anchor_age")
+```
+
+Also, we can remove all the missing data by:
+
+```{r}
+patients_tab %>%
+  filter(anchor_age > 0) %>%
+  ggplot(aes(x = anchor_age)) +
+  geom_histogram(bins = 25) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) + 
+  xlab("anchor_age")
+```
 
 ## Q5. Lab results
 
