@@ -252,7 +252,7 @@ patients_tab <- read_csv(str_c(mimic_path, "/core/patients.csv.gz")) %>%
 
 **Solution: Gender**
 
-In this dataset, there more females than males.
+In this dataset, females are more than males.
 
 ```{r}
 patients_tab %>%
@@ -292,7 +292,7 @@ patients_tab %>%
 system(
   str_c(
     "zcat < ", 
-    shQuote(str_c(mimic_path, "/hosp/labevents.csv.gz")), 
+    shQuote(str_c(mimic_path, "/hosp/labevents_filtered_itemid.csv.gz")), 
     " | head"
     ), 
   intern = TRUE
@@ -303,7 +303,7 @@ system(
 system(
   str_c(
     "zcat < ", 
-    shQuote(str_c(mimic_path, "/hosp/d_labitems.csv.gz")), 
+    shQuote(str_c(mimic_path, "/hosp/labevents_filtered_itemid.csv.gz")), 
     " | head"
     ), 
   intern = TRUE
@@ -318,6 +318,22 @@ system(
 
 3. Further restrict `labevents_tble` to the first lab measurement during the ICU stay. 
 4. Summarize the lab measurements by appropriate numerics and graphics. 
+
+**Solution:**
+
+```{r}
+labevents_tab <- read_csv(
+  str_c("/mnt/mimiciv/1.0/hosp/labevents_filtered_itemid.csv.gz")) %>%
+  semi_join(icustays_tab, by = c("subject_id")) %>%
+  left_join(select(icustays_tab, subject_id, intime), by = c("subject_id")) %>%
+  filter(charttime >= intime) %>%
+  group_by(subject_id, itemid) %>%
+  arrange(charttime, by_group = T) %>%
+  slice_head(n = 1) %>%
+  ungroup() %>%
+  print(width = Inf)
+```
+
 
 ## Q6. Vitals from charted events
 
@@ -348,6 +364,21 @@ system(
 
 3. Summarize these vital measurements by appropriate numerics and graphics. 
 
+**Solution:**
+
+```{r}
+chartevents_tab <- read_csv(
+  str_c("/mnt/mimiciv/1.0/icu/chartevents_filtered_itemid.csv.gz")) %>%
+  semi_join(icustays_tab, by = c("subject_id")) %>%
+  left_join(icustays_tab, by = c("subject_id", "hadm_id", "stay_id")) %>%
+  filter(charttime >= intime) %>%
+  group_by(hadm_id, itemid) %>%
+  arrange(charttime, by_group = T) %>%
+  slice_head(n = 1) %>%
+  ungroup() %>%
+  print(width = Inf)
+```
+
 ## Q7. Putting things together
 
 Let us create a tibble `mimic_icu_cohort` for all ICU stays, where rows are  
@@ -363,11 +394,42 @@ and columns contain at least following variables
 - first vital measurements during ICU stay
 - an indicator variable `thirty_day_mort` whether the patient died within 30 days of hospital admission (30 day mortality)
 
+**Solution:**
+
+
+death_tab <- admissions_tab %>% 
+  group_by(subject_id) %>%
+  filter(hospital_expire_flag ==1) %>%
+  mutate(died = 1,
+         death_time = last(dischtime)) %>%
+  slice(which.max(dischtime)) %>%
+  select(subject_id, died, death_time)
+icustays_tab_first <- icustays_tab %>% 
+  group_by(subject_id) %>%
+  slice_min(intime) %>%
+  left_join(admissions_tab, by = c("subject_id", "hadm_id")) %>%
+  left_join(patients_tab, by = "subject_id") %>%
+  mutate(age_at_adm = year(admittime) - anchor_year + anchor_age) %>%
+  filter(age_at_adm >= 18) %>%
+  left_join(labevents_tab, by = c("subject_id", "hadm_id")) %>%
+  left_join(chartevents_tab, by = c("subject_id", "hadm_id", "stay_id")) %>%
+  left_join(death_tab, by = "subject_id") %>%
+  mutate(died = ifelse(is.na(died), 0, died),
+         admit_to_death = difftime(date(death_time), date(admittime), 
+                                  units = "days"),
+         died_in_30days = ifelse(admit_to_death > 30 | 
+                                   is.na(admit_to_death), 0, 1)) %>%
+  print(width = Inf)
+
+
+
 ## Q8. Exploratory data analysis (EDA)
 
 Summarize following information using appropriate numerics or graphs.
 
 - `thirty_day_mort` vs demographic variables (ethnicity, language, insurance, marital_status, gender, age at hospital admission)
+
+
 
 - `thirty_day_mort` vs first lab measurements
 
