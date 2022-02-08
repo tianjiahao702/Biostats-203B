@@ -334,6 +334,23 @@ labevents_tab <- read_csv(
   print(width = Inf)
 ```
 
+```{r}
+summary(labevents_tab)
+```
+
+```{r}
+labevents_tab %>%
+  select(1:5) %>%
+  gather() %>%
+  group_by(key) %>%
+  filter(value > quantile(value, 0.02, na.rm = T)
+         & value < quantile(value, 0.98, na.rm = T)) %>%
+  ungroup %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 25) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) + 
+  xlab("value")
+```
 
 ## Q6. Vitals from charted events
 
@@ -379,6 +396,24 @@ chartevents_tab <- read_csv(
   print(width = Inf)
 ```
 
+```{r}
+summary(chartevents_tab)
+```
+
+```{r}
+chartevents_tab %>%
+  select(1:5) %>%
+  gather() %>%
+  group_by(key) %>%
+  filter(value > quantile(value, 0.02, na.rm = T)
+         & value < quantile(value, 0.98, na.rm = T)) %>%
+  ungroup %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 25) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) + 
+  xlab("value")
+```
+
 ## Q7. Putting things together
 
 Let us create a tibble `mimic_icu_cohort` for all ICU stays, where rows are  
@@ -397,29 +432,18 @@ and columns contain at least following variables
 **Solution:**
 
 
-death_tab <- admissions_tab %>% 
-  group_by(subject_id) %>%
-  filter(hospital_expire_flag ==1) %>%
-  mutate(died = 1,
-         death_time = last(dischtime)) %>%
-  slice(which.max(dischtime)) %>%
-  select(subject_id, died, death_time)
-icustays_tab_first <- icustays_tab %>% 
-  group_by(subject_id) %>%
-  slice_min(intime) %>%
+mimic_icu_cohort <- icustays_tab %>% 
   left_join(admissions_tab, by = c("subject_id", "hadm_id")) %>%
   left_join(patients_tab, by = "subject_id") %>%
-  mutate(age_at_adm = year(admittime) - anchor_year + anchor_age) %>%
+  left_join(labevents_tab, by = "subject_id") %>%
+  left_join(chartevents_tab, by = "subject_id") %>%
+  mutate(age_at_adm <- (anchor_age + year(admittime) - anchor_year)) %>%
+  slice(which.max(dischtime)) %>%
+  select(subject_id, deathtime) %>%
   filter(age_at_adm >= 18) %>%
-  left_join(labevents_tab, by = c("subject_id", "hadm_id")) %>%
-  left_join(chartevents_tab, by = c("subject_id", "hadm_id", "stay_id")) %>%
-  left_join(death_tab, by = "subject_id") %>%
-  mutate(died = ifelse(is.na(died), 0, died),
-         admit_to_death = difftime(date(death_time), date(admittime), 
-                                  units = "days"),
-         died_in_30days = ifelse(admit_to_death > 30 | 
-                                   is.na(admit_to_death), 0, 1)) %>%
-  print(width = Inf)
+  mutate(died = difftime(date(deathtime), date(admittime), units = "days"),
+         thirty_day_mort = ifelse(admitdeath <= 30 & !is.na(death), 1, 0))
+mimic_icu_cohort
 
 
 
