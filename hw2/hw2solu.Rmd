@@ -402,7 +402,7 @@ summary(chartevents_tab)
 
 ```{r}
 chartevents_tab %>%
-  select(1:5) %>%
+  select(1:6) %>%
   gather() %>%
   group_by(key) %>%
   filter(value > quantile(value, 0.02, na.rm = T)
@@ -431,20 +431,19 @@ and columns contain at least following variables
 
 **Solution:**
 
-
-mimic_icu_cohort <- icustays_tab %>% 
-  left_join(admissions_tab, by = c("subject_id", "hadm_id")) %>%
+```{r}
+thirty_day_mort <- admissions_tab %>% 
+  group_by(subject_id) %>%
+  filter(hospital_expire_flag ==1) %>%
+  mutate(died = 1,
+         death_time = last(dischtime)) %>%
+  slice(which.max(dischtime)) %>%
+   left_join(admissions_tab, by = c("subject_id", "hadm_id")) %>%
   left_join(patients_tab, by = "subject_id") %>%
   left_join(labevents_tab, by = "subject_id") %>%
   left_join(chartevents_tab, by = "subject_id") %>%
-  mutate(age_at_adm <- (anchor_age + year(admittime) - anchor_year)) %>%
-  slice(which.max(dischtime)) %>%
-  select(subject_id, deathtime) %>%
-  filter(age_at_adm >= 18) %>%
-  mutate(died = difftime(date(deathtime), date(admittime), units = "days"),
-         thirty_day_mort = ifelse(admitdeath <= 30 & !is.na(death), 1, 0))
-mimic_icu_cohort
-
+  select(subject_id, died, death_time)
+```
 
 
 ## Q8. Exploratory data analysis (EDA)
@@ -453,11 +452,101 @@ Summarize following information using appropriate numerics or graphs.
 
 - `thirty_day_mort` vs demographic variables (ethnicity, language, insurance, marital_status, gender, age at hospital admission)
 
+**Solution:**
 
+```{r}
+summary(thirty_day_mort)
+```
+
+```{r}
+admissions_tab %>%
+  pivot_longer(9:12, names_to = "x", values_to = "y") %>%
+  ggplot(aes(y = y, x = x)) +
+  geom_boxplot() +
+  labs(x = "x", y = "y (on a 1 to 5 scale)")
+
+thirty_day_mort %>%
+  ggplot(aes(x = died)) +
+  geom_histogram(bins = 30) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) +
+  xlab("died")
+```
 
 - `thirty_day_mort` vs first lab measurements
 
+**Solution:**
+
+```{r}
+summary(thirty_day_mort)
+```
+
+```{r}
+labevents_tab %>%
+  select(1:5) %>%
+  gather() %>%
+  group_by(key) %>%
+  filter(value > quantile(value, 0.02, na.rm = T)
+         & value < quantile(value, 0.98, na.rm = T)) %>%
+  ungroup %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 25) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) + 
+  xlab("value")
+
+thirty_day_mort %>%
+  ggplot(aes(x = died)) +
+  geom_histogram(bins = 30) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) +
+  xlab("died")
+```
+
 - `thirty_day_mort` vs first vital measurements
 
+**Solution:**
+
+```{r}
+summary(thirty_day_mort)
+```
+
+```{r}
+chartevents_tab %>%
+  select(1:6) %>%
+  gather() %>%
+  group_by(key) %>%
+  filter(value > quantile(value, 0.02, na.rm = T)
+         & value < quantile(value, 0.98, na.rm = T)) %>%
+  ungroup %>%
+  ggplot(aes(x = value)) +
+  geom_histogram(bins = 25) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) + 
+  xlab("value")
+
+thirty_day_mort %>%
+  ggplot(aes(x = died)) +
+  geom_histogram(bins = 30) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) +
+  xlab("died")
+```
+
 - `thirty_day_mort` vs first ICU unit
+
+**Solution:**
+
+```{r}
+summary(thirty_day_mort)
+```
+
+```{r}
+ggplot(data = icustays_tab) + 
+  geom_bar(mapping = aes(y = first_careunit)) +
+  ggtitle("First ICU stay") +
+  ylab("First ICU stay") +
+  xlab("Count")
+
+thirty_day_mort %>%
+  ggplot(aes(x = died)) +
+  geom_histogram(bins = 30) +
+  scale_x_continuous(breaks = seq(0, 100, 10)) +
+  xlab("died")
+```
 
