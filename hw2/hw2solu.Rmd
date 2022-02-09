@@ -554,4 +554,3 @@ mimic_icu_cohort %>%
   scale_x_continuous(breaks = seq(0, 100, 10)) +
   xlab("thirty_day_mort")
 ```
-
