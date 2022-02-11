@@ -37,3 +37,8 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# hw solutions
+*_files/
+*_cache/
+
