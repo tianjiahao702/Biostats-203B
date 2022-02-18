@@ -1,0 +1,4271 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="generator" content="Hugo 0.84.0-DEV" /><link rel="alternate" type="application/rss&#43;xml" href="https://mimic.mit.edu/docs/iv/index.xml">
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+
+
+<link rel="shortcut icon" href="/favicons/favicon.ico" >
+<link rel="apple-touch-icon" href="/favicons/apple-touch-icon-180x180.png" sizes="180x180">
+<link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/favicons/android-36x36.png" sizes="36x36">
+<link rel="icon" type="image/png" href="/favicons/android-48x48.png" sizes="48x48">
+<link rel="icon" type="image/png" href="/favicons/android-72x72.png" sizes="72x72">
+<link rel="icon" type="image/png" href="/favicons/android-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/favicons/android-144x144.png" sizes="144x144">
+<link rel="icon" type="image/png" href="/favicons/android-192x192.png" sizes="192x192">
+
+<title>MIMIC-IV documentation | MIMIC</title>
+<meta name="description" content="A large, publicly available critical care database"><meta property="og:title" content="MIMIC-IV documentation" />
+<meta property="og:description" content="A large, publicly available critical care database" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://mimic.mit.edu/docs/iv/" /><meta property="og:site_name" content="MIMIC" />
+
+<meta itemprop="name" content="MIMIC-IV documentation">
+<meta itemprop="description" content="A large, publicly available critical care database"><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MIMIC-IV documentation"/>
+<meta name="twitter:description" content="A large, publicly available critical care database"/>
+
+
+
+
+<link rel="preload" href="/scss/main.min.c834369451626515537f190726d28672a8bf73491f3a2ff22d2f670ab33795ac.css" as="style">
+<link href="/scss/main.min.c834369451626515537f190726d28672a8bf73491f3a2ff22d2f670ab33795ac.css" rel="stylesheet" integrity="">
+
+
+<script
+  src="https://code.jquery.com/jquery-3.5.1.min.js"
+  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+
+
+
+
+
+  </head>
+  <body class="td-section">
+    <header>
+      
+<nav class="js-navbar-scroll navbar navbar-expand navbar-dark flex-column flex-md-row td-navbar">
+        <a class="navbar-brand" href="/">
+		<span class="navbar-logo"><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 500 500" style="enable-background:new 0 0 500 500"><g><path style="fill:#fff" d="M116.8525 421.9722c-5.7041.0-10.3442-4.3127-10.3442-9.6129V88.183c0-5.3002 4.6401-9.6117 10.3442-9.6117H320.858c3.0347.0 9.3959.5498 11.7506 2.6302l.3545.3442 58.905 63.2912c2.3101 2.491 2.9202 8.4928 2.9202 11.3184v256.2039c0 5.3002-4.6407 9.6129-10.3436 9.6129H116.8525z"/><g><g><g><path style="fill:#767676" d="M384.4445 423.2066H116.852c-6.3839.0-11.5786-4.8658-11.5786-10.8474V88.1831c0-5.9804 5.1947-10.8461 11.5786-10.8461h204.0062c.377.0 9.2786.0329 12.568 2.9389l.3947.3833 58.9508 63.337c3.2135 3.4652 3.2514 11.7924 3.2514 12.1593v256.2036C396.0231 418.3408 390.8284 423.2066 384.4445 423.2066zM116.5079 411.9189c.0848.0278.1999.0531.3441.0531h267.5925c.1442.0.2581-.0253.3441-.0531V156.1556c-.0076-.9033-.3593-3.7347-.7034-5.0037l-57.6527-61.9416c-1.4651-.3176-4.4533-.6389-5.5742-.6389H116.852c-.143.0-.2594.024-.3441.0531V411.9189zm267.4533-261.149zM327.0321 89.371v.0013V89.371z"/></g></g></g><g><g><path style="fill:#5b7fc0" d="M189.0874 210.1754l.0012-.0012c7.7751.0012 15.0295 4.1862 18.932 10.9234 1.9177 3.3159 2.9305 7.1011 2.9293 10.9378.0 5.8394-2.2733 11.3304-6.4032 15.4604-4.1288 4.1288-9.6186 6.4032-15.458 6.4032s-11.328-2.2733-15.458-6.4032-6.4032-9.6186-6.4056-15.4628c.0012-6.025 2.454-11.4897 6.4116-15.4473C177.5953 212.627 183.0601 210.1742 189.0874 210.1754zm7.993 21.8576c.0012-1.4042-.3687-2.7868-1.063-3.9887-1.4293-2.4684-4.0833-3.9995-6.9299-4.0019-4.4077.0024-7.993 3.5877-7.993 7.993.0 2.1356.832 4.1431 2.3427 5.6539 1.5083 1.5083 3.5159 2.3403 5.6503 2.3415 2.1356.0 4.1443-.8308 5.6539-2.3403S197.0816 234.1722 197.0804 232.033z"/><path style="opacity:.3;fill:#fff" d="M189.0898 210.176c7.7763.0 15.0283 4.1826 18.926 10.9151 1.9201 3.3136 2.9377 7.0988 2.9353 10.9462.0024 12.0643-9.8065 21.8636-21.8613 21.8613-12.0547.0024-21.8636-9.8066-21.8612-21.8613.0-6.0285 2.4516-11.4921 6.4116-15.452C177.5977 212.6276 183.0612 210.176 189.0898 210.176zm7.9941 21.8612c0-1.4078-.3711-2.7892-1.0702-3.9959-1.4269-2.466-4.0797-3.9983-6.924-3.9983-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0024 4.4077 3.5865 7.9918 7.9942 7.9942 2.2027.0 4.2018-.8978 5.6479-2.3439C196.1861 236.239 197.0839 234.2399 197.0839 232.0372z"/><g><defs><path id="SVGID_1_" d="M194.7376 237.6875c-1.4461 1.4461-3.4452 2.3439-5.6479 2.3439-4.4077-.0024-7.9918-3.5865-7.9942-7.9942.0024-4.4125 3.5937-7.999 7.9942-7.9942 2.8443.0 5.497 1.5323 6.924 3.9983.6991 1.2067 1.0702 2.5881 1.0702 3.9959C197.0839 234.2399 196.1861 236.239 194.7376 237.6875z"/></defs><clipPath id="SVGID_2_"><use xlink:href="#SVGID_1_" style="overflow:visible"/></clipPath><path style="clip-path:url(#SVGID_2_);fill:#fff" d="M190.0704 225.0237c-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0011 1.9546.7088 3.7452 1.8782 5.1354-1.7447-1.4674-2.8575-3.663-2.8588-6.116.0024-4.4125 3.5936-7.999 7.9942-7.9942 2.3802-1e-4 4.616 1.0833 6.1218 2.8788C193.7885 225.7247 191.9774 225.0237 190.0704 225.0237z"/><path style="opacity:.13;clip-path:url(#SVGID_2_);fill:#020202" d="M190.0704 225.0237c-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0011 1.9546.7088 3.7452 1.8782 5.1354-1.7447-1.4674-2.8575-3.663-2.8588-6.116.0024-4.4125 3.5936-7.999 7.9942-7.9942 2.3802-1e-4 4.616 1.0833 6.1218 2.8788C193.7885 225.7247 191.9774 225.0237 190.0704 225.0237z"/></g><g><defs><path id="SVGID_3_" d="M189.0898 210.176c7.7763.0 15.0283 4.1826 18.926 10.9151 1.9201 3.3136 2.9377 7.0988 2.9353 10.9462.0024 12.0643-9.8065 21.8636-21.8613 21.8613-12.0547.0024-21.8636-9.8066-21.8612-21.8613.0-6.0285 2.4516-11.4921 6.4116-15.452C177.5977 212.6276 183.0612 210.176 189.0898 210.176zm7.9941 21.8612c0-1.4078-.3711-2.7892-1.0702-3.9959-1.4269-2.466-4.0797-3.9983-6.924-3.9983-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0024 4.4077 3.5865 7.9918 7.9942 7.9942 2.2027.0 4.2018-.8978 5.6479-2.3439C196.1861 236.239 197.0839 234.2399 197.0839 232.0372z"/></defs><clipPath id="SVGID_4_"><use xlink:href="#SVGID_3_" style="overflow:visible"/></clipPath><path style="clip-path:url(#SVGID_4_);fill:#5b7fc0" d="M172.6595 215.6045c-3.96 3.96-6.4116 9.4235-6.4116 15.452-.0024 12.0547 9.8066 21.8636 21.8613 21.8612 12.0547.0024 21.8636-9.797 21.8613-21.8612.0024-3.8475-1.0151-7.6326-2.9353-10.9462-3.8977-6.7324-11.1497-10.9151-18.926-10.9151C182.0806 209.1953 176.6171 211.647 172.6595 215.6045z"/></g></g><rect x="198.8952" y="225.1043" style="fill:#5b7fc0" width="122.6266" height="13.8671"/></g><g><path style="fill:#d95140" d="M189.0874 155.7611l.0012-.0012c7.7751.0012 15.0295 4.1862 18.932 10.9234 1.9177 3.3159 2.9305 7.1011 2.9293 10.9378.0 5.8394-2.2733 11.3304-6.4032 15.4604-4.1288 4.1288-9.6186 6.4032-15.458 6.4032s-11.328-2.2733-15.458-6.4032-6.4032-9.6186-6.4056-15.4628c.0012-6.0249 2.454-11.4897 6.4116-15.4473C177.5953 158.2128 183.0601 155.7599 189.0874 155.7611zm7.993 21.8577c.0012-1.4042-.3687-2.7868-1.063-3.9887-1.4293-2.4684-4.0833-3.9995-6.9299-4.0019-4.4077.0024-7.993 3.5877-7.993 7.993.0 2.1356.832 4.1431 2.3427 5.6539 1.5083 1.5083 3.5159 2.3403 5.6503 2.3415 2.1356.0 4.1443-.8308 5.6539-2.3403C196.2508 181.7667 197.0816 179.758 197.0804 177.6188z"/><path style="opacity:.3;fill:#fff" d="M189.0898 155.7617c7.7763.0 15.0283 4.1826 18.926 10.9151 1.9201 3.3135 2.9377 7.0987 2.9353 10.9462.0024 12.0643-9.8065 21.8636-21.8613 21.8613-12.0547.0024-21.8636-9.8066-21.8612-21.8613.0-6.0285 2.4516-11.4921 6.4116-15.452C177.5977 158.2134 183.0612 155.7617 189.0898 155.7617zm7.9941 21.8613c0-1.4078-.3711-2.7892-1.0702-3.9959-1.4269-2.466-4.0797-3.9983-6.924-3.9983-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0024 4.4077 3.5865 7.9918 7.9942 7.9942 2.2027.0 4.2018-.8978 5.6479-2.3439C196.1861 181.8248 197.0839 179.8256 197.0839 177.623z"/><g><defs><path id="SVGID_5_" d="M194.7376 183.2733c-1.4461 1.4461-3.4452 2.3439-5.6479 2.3439-4.4077-.0024-7.9918-3.5865-7.9942-7.9942.0024-4.4125 3.5937-7.9989 7.9942-7.9942 2.8443.0 5.497 1.5323 6.924 3.9983.6991 1.2067 1.0702 2.5881 1.0702 3.9959C197.0839 179.8256 196.1861 181.8248 194.7376 183.2733z"/></defs><clipPath id="SVGID_6_"><use xlink:href="#SVGID_5_" style="overflow:visible"/></clipPath><path style="clip-path:url(#SVGID_6_);fill:#fff" d="M190.0704 170.6095c-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0011 1.9546.7088 3.7452 1.8782 5.1354-1.7447-1.4674-2.8575-3.663-2.8588-6.116.0024-4.4125 3.5936-7.999 7.9942-7.9942 2.3802-1e-4 4.616 1.0833 6.1218 2.8788C193.7885 171.3104 191.9774 170.6095 190.0704 170.6095z"/><path style="opacity:.13;clip-path:url(#SVGID_6_);fill:#020202" d="M190.0704 170.6095c-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0011 1.9546.7088 3.7452 1.8782 5.1354-1.7447-1.4674-2.8575-3.663-2.8588-6.116.0024-4.4125 3.5936-7.999 7.9942-7.9942 2.3802-1e-4 4.616 1.0833 6.1218 2.8788C193.7885 171.3104 191.9774 170.6095 190.0704 170.6095z"/></g><g><defs><path id="SVGID_7_" d="M189.0898 155.7617c7.7763.0 15.0283 4.1826 18.926 10.9151 1.9201 3.3135 2.9377 7.0987 2.9353 10.9462.0024 12.0643-9.8065 21.8636-21.8613 21.8613-12.0547.0024-21.8636-9.8066-21.8612-21.8613.0-6.0285 2.4516-11.4921 6.4116-15.452C177.5977 158.2134 183.0612 155.7617 189.0898 155.7617zm7.9941 21.8613c0-1.4078-.3711-2.7892-1.0702-3.9959-1.4269-2.466-4.0797-3.9983-6.924-3.9983-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0024 4.4077 3.5865 7.9918 7.9942 7.9942 2.2027.0 4.2018-.8978 5.6479-2.3439C196.1861 181.8248 197.0839 179.8256 197.0839 177.623z"/></defs><clipPath id="SVGID_8_"><use xlink:href="#SVGID_7_" style="overflow:visible"/></clipPath><path style="clip-path:url(#SVGID_8_);fill:#d95140" d="M172.6595 161.1903c-3.96 3.96-6.4116 9.4235-6.4116 15.452-.0024 12.0547 9.8066 21.8636 21.8613 21.8613 12.0547.0024 21.8636-9.797 21.8613-21.8613.0024-3.8474-1.0151-7.6326-2.9353-10.9462-3.8977-6.7324-11.1497-10.9151-18.926-10.9151C182.0806 154.7811 176.6171 157.2327 172.6595 161.1903z"/></g><rect x="198.8952" y="170.69" style="fill:#d95140" width="122.6266" height="13.8671"/></g><g><g><path style="fill:#56a55c" d="M189.5379 264.6147l.0012-.0012c7.7751.0012 15.0294 4.1862 18.932 10.9235 1.9177 3.3159 2.9305 7.1011 2.9293 10.9378.0 5.8394-2.2733 11.3304-6.4032 15.4604-4.1288 4.1288-9.6186 6.4032-15.458 6.4032-5.8394.0-11.3281-2.2733-15.458-6.4032-4.13-4.13-6.4032-9.6186-6.4056-15.4628.0012-6.0249 2.454-11.4897 6.4116-15.4472C178.0458 267.0663 183.5105 264.6135 189.5379 264.6147zm7.993 21.8576c.0012-1.4042-.3687-2.7868-1.063-3.9887-1.4293-2.4684-4.0833-3.9995-6.9299-4.0019-4.4077.0024-7.993 3.5877-7.993 7.993.0 2.1356.832 4.1431 2.3427 5.6538 1.5083 1.5083 3.5159 2.3403 5.6503 2.3415 2.1356.0 4.1443-.8308 5.6539-2.3403C196.7013 290.6202 197.5321 288.6115 197.5309 286.4723z"/><path style="opacity:.3;fill:#fff" d="M189.5403 264.6153c7.7763.0 15.0283 4.1826 18.926 10.9151 1.9201 3.3135 2.9377 7.0987 2.9353 10.9462.0024 12.0643-9.8065 21.8636-21.8613 21.8613-12.0547.0024-21.8636-9.8065-21.8612-21.8613.0-6.0285 2.4516-11.492 6.4116-15.452C178.0482 267.0669 183.5117 264.6153 189.5403 264.6153zm7.9941 21.8612c0-1.4078-.3711-2.7892-1.0702-3.9959-1.4269-2.466-4.0797-3.9983-6.924-3.9983-4.4005-.0048-7.9918 3.5817-7.9942 7.9941.0024 4.4077 3.5865 7.9918 7.9942 7.9942 2.2027.0 4.2018-.8978 5.6479-2.3439C196.6366 290.6783 197.5344 288.6792 197.5344 286.4765z"/><g><defs><path id="SVGID_9_" d="M195.1881 292.1268c-1.4461 1.4461-3.4452 2.3439-5.6479 2.3439-4.4077-.0024-7.9918-3.5865-7.9942-7.9942.0024-4.4125 3.5937-7.9989 7.9942-7.9941 2.8443.0 5.497 1.5323 6.924 3.9983.6991 1.2067 1.0702 2.5881 1.0702 3.9959C197.5344 288.6792 196.6366 290.6783 195.1881 292.1268z"/></defs><clipPath id="SVGID_10_"><use xlink:href="#SVGID_9_" style="overflow:visible"/></clipPath><path style="clip-path:url(#SVGID_10_);fill:#fff" d="M190.5209 279.463c-4.4005-.0048-7.9918 3.5817-7.9942 7.9941.0011 1.9547.7088 3.7452 1.8782 5.1354-1.7446-1.4674-2.8575-3.6631-2.8588-6.1161.0024-4.4125 3.5936-7.999 7.9942-7.9941 2.3802-1e-4 4.616 1.0833 6.1218 2.8788C194.239 280.164 192.4279 279.463 190.5209 279.463z"/><path style="opacity:.13;clip-path:url(#SVGID_10_);fill:#020202" d="M190.5209 279.463c-4.4005-.0048-7.9918 3.5817-7.9942 7.9941.0011 1.9547.7088 3.7452 1.8782 5.1354-1.7446-1.4674-2.8575-3.6631-2.8588-6.1161.0024-4.4125 3.5936-7.999 7.9942-7.9941 2.3802-1e-4 4.616 1.0833 6.1218 2.8788C194.239 280.164 192.4279 279.463 190.5209 279.463z"/></g><g><defs><path id="SVGID_11_" d="M189.5403 264.6153c7.7763.0 15.0283 4.1826 18.926 10.9151 1.9201 3.3135 2.9377 7.0987 2.9353 10.9462.0024 12.0643-9.8065 21.8636-21.8613 21.8613-12.0547.0024-21.8636-9.8065-21.8612-21.8613.0-6.0285 2.4516-11.492 6.4116-15.452C178.0482 267.0669 183.5117 264.6153 189.5403 264.6153zm7.9941 21.8612c0-1.4078-.3711-2.7892-1.0702-3.9959-1.4269-2.466-4.0797-3.9983-6.924-3.9983-4.4005-.0048-7.9918 3.5817-7.9942 7.9941.0024 4.4077 3.5865 7.9918 7.9942 7.9942 2.2027.0 4.2018-.8978 5.6479-2.3439C196.6366 290.6783 197.5344 288.6792 197.5344 286.4765z"/></defs><clipPath id="SVGID_12_"><use xlink:href="#SVGID_11_" style="overflow:visible"/></clipPath><path style="clip-path:url(#SVGID_12_);fill:#56a55c" d="M173.11 270.0439c-3.96 3.96-6.4116 9.4235-6.4116 15.452-.0024 12.0547 9.8066 21.8636 21.8613 21.8613 12.0547.0024 21.8636-9.797 21.8613-21.8613.0024-3.8474-1.0151-7.6326-2.9353-10.9462-3.8977-6.7325-11.1497-10.9151-18.926-10.9151C182.5311 263.6346 177.0676 266.0863 173.11 270.0439z"/></g></g><rect x="199.3456" y="279.5436" style="fill:#56a55c" width="122.6266" height="13.8671"/></g><g><g><path style="fill:#f1bc42" d="M189.0874 318.7208l.0012-.0012c7.7751.0012 15.0295 4.1862 18.932 10.9234 1.9177 3.3159 2.9305 7.1011 2.9293 10.9378.0 5.8394-2.2733 11.3305-6.4032 15.4604-4.1288 4.1288-9.6186 6.4032-15.458 6.4032s-11.328-2.2733-15.458-6.4032-6.4032-9.6186-6.4056-15.4628c.0012-6.025 2.454-11.4897 6.4116-15.4472C177.5953 321.1724 183.0601 318.7196 189.0874 318.7208zm7.993 21.8576c.0012-1.4042-.3687-2.7868-1.063-3.9887-1.4293-2.4684-4.0833-3.9995-6.9299-4.0019-4.4077.0024-7.993 3.5877-7.993 7.993.0 2.1356.832 4.1431 2.3427 5.6539 1.5083 1.5083 3.5159 2.3403 5.6503 2.3415 2.1356.0 4.1443-.8308 5.6539-2.3403S197.0816 342.7176 197.0804 340.5784z"/><path style="opacity:.3;fill:#fff" d="M189.0898 318.7214c7.7763.0 15.0283 4.1826 18.926 10.915 1.9201 3.3136 2.9377 7.0988 2.9353 10.9462.0024 12.0643-9.8065 21.8636-21.8613 21.8612-12.0547.0024-21.8636-9.8065-21.8612-21.8612.0-6.0285 2.4516-11.4921 6.4116-15.452C177.5977 321.173 183.0612 318.7214 189.0898 318.7214zm7.9941 21.8612c0-1.4078-.3711-2.7892-1.0702-3.9959-1.4269-2.466-4.0797-3.9983-6.924-3.9983-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0024 4.4077 3.5865 7.9918 7.9942 7.9942 2.2027.0 4.2018-.8978 5.6479-2.3439C196.1861 344.7844 197.0839 342.7853 197.0839 340.5826z"/><g><defs><path id="SVGID_13_" d="M194.7376 346.2329c-1.4461 1.4461-3.4452 2.3439-5.6479 2.3439-4.4077-.0024-7.9918-3.5865-7.9942-7.9942.0024-4.4125 3.5937-7.999 7.9942-7.9942 2.8443.0 5.497 1.5323 6.924 3.9983.6991 1.2067 1.0702 2.5881 1.0702 3.9959C197.0839 342.7853 196.1861 344.7844 194.7376 346.2329z"/></defs><clipPath id="SVGID_14_"><use xlink:href="#SVGID_13_" style="overflow:visible"/></clipPath><path style="clip-path:url(#SVGID_14_);fill:#fff" d="M190.0704 333.5691c-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0011 1.9547.7088 3.7452 1.8782 5.1354-1.7447-1.4674-2.8575-3.6631-2.8588-6.1161.0024-4.4125 3.5936-7.999 7.9942-7.9942 2.3802-1e-4 4.616 1.0834 6.1218 2.8788C193.7885 334.2701 191.9774 333.5691 190.0704 333.5691z"/><path style="opacity:.13;clip-path:url(#SVGID_14_);fill:#020202" d="M190.0704 333.5691c-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0011 1.9547.7088 3.7452 1.8782 5.1354-1.7447-1.4674-2.8575-3.6631-2.8588-6.1161.0024-4.4125 3.5936-7.999 7.9942-7.9942 2.3802-1e-4 4.616 1.0834 6.1218 2.8788C193.7885 334.2701 191.9774 333.5691 190.0704 333.5691z"/></g><g><defs><path id="SVGID_15_" d="M189.0898 318.7214c7.7763.0 15.0283 4.1826 18.926 10.915 1.9201 3.3136 2.9377 7.0988 2.9353 10.9462.0024 12.0643-9.8065 21.8636-21.8613 21.8612-12.0547.0024-21.8636-9.8065-21.8612-21.8612.0-6.0285 2.4516-11.4921 6.4116-15.452C177.5977 321.173 183.0612 318.7214 189.0898 318.7214zm7.9941 21.8612c0-1.4078-.3711-2.7892-1.0702-3.9959-1.4269-2.466-4.0797-3.9983-6.924-3.9983-4.4005-.0048-7.9918 3.5817-7.9942 7.9942.0024 4.4077 3.5865 7.9918 7.9942 7.9942 2.2027.0 4.2018-.8978 5.6479-2.3439C196.1861 344.7844 197.0839 342.7853 197.0839 340.5826z"/></defs><clipPath id="SVGID_16_"><use xlink:href="#SVGID_15_" style="overflow:visible"/></clipPath><path style="clip-path:url(#SVGID_16_);fill:#f1bc42" d="M172.6595 324.15c-3.96 3.96-6.4116 9.4235-6.4116 15.452-.0024 12.0547 9.8066 21.8636 21.8613 21.8612 12.0547.0024 21.8636-9.797 21.8613-21.8612.0024-3.8474-1.0151-7.6327-2.9353-10.9462-3.8977-6.7324-11.1497-10.9151-18.926-10.9151C182.0806 317.7407 176.6171 320.1924 172.6595 324.15z"/></g></g><rect x="198.8952" y="333.6497" style="fill:#f1bc42" width="122.6266" height="13.8671"/></g></g></svg></span><span class="text-uppercase font-weight-bold">MIMIC</span>
+	</a>
+	<div class="td-navbar-nav-scroll ml-md-auto" id="main_navbar">
+		<ul class="navbar-nav mt-2 mt-lg-0">
+			
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				
+				
+				<a class="nav-link active" href="/docs/" ><span class="active">Docs</span></a>
+			</li>
+			
+			<li class="nav-item mr-4 mb-2 mb-lg-0">
+				
+				
+				
+				
+				
+				
+				
+				
+				<a class="nav-link" href="/docs/community/" ><span>Community</span></a>
+			</li>
+			
+			
+			
+		</ul>
+	</div>
+	<div class="navbar-nav d-none d-lg-block">
+</div>
+</nav>
+
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main">
+        <div class="row flex-xl-nowrap">
+          <aside class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            
+
+
+
+
+  
+
+
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  
+  <form class="td-sidebar__search d-flex align-items-center">
+    
+
+    <button class="btn btn-link td-sidebar__toggle d-md-none p-0 ml-3 fas fa-bars" type="button" data-toggle="collapse" data-target="#td-section-nav" aria-controls="td-docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    </button>
+  </form>
+  
+  <nav class="collapse td-sidebar-nav foldable-nav" id="td-section-nav">
+    
+    
+    
+    
+    
+    <ul class="td-sidebar-nav__section pr-md-3 ul-0">
+      
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child active-path" id="m-docs-li">
+    
+      <a href="/docs/" title="MIMIC documentation" class="align-left pl-0 td-sidebar-link td-sidebar-link__section tree-root" id="m-docs"><span class="">Docs</span></a>
+    
+    
+      
+      <ul class="ul-1">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docshelp-li">
+    
+      <input type="checkbox" id="m-docshelp-check"/>
+      <label for="m-docshelp-check"><a href="/docs/help/" title="Help and support" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docshelp"><span class="">Help</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsabout-li">
+    
+      <input type="checkbox" id="m-docsabout-check"/>
+      <label for="m-docsabout-check"><a href="/docs/about/" title="About MIMIC" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsabout"><span class="">About</span></a></label>
+    
+    
+      
+      <ul class="ul-2 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsaboutacknowledgments-li">
+    
+      <input type="checkbox" id="m-docsaboutacknowledgments-check"/>
+      <label for="m-docsaboutacknowledgments-check"><a href="/docs/about/acknowledgments/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsaboutacknowledgments"><span class="">Acknowledgements</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsaboutsources-li">
+    
+      <input type="checkbox" id="m-docsaboutsources-check"/>
+      <label for="m-docsaboutsources-check"><a href="/docs/about/sources/" title="MIMIC data sources" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsaboutsources"><span class="">Sources</span></a></label>
+    
+    
+      
+      <ul class="ul-3 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsaboutsourcesmetavision-li">
+    
+      <input type="checkbox" id="m-docsaboutsourcesmetavision-check"/>
+      <label for="m-docsaboutsourcesmetavision-check"><a href="/docs/about/sources/metavision/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsaboutsourcesmetavision"><span class="">MetaVision</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsaboutsourcescarevue-li">
+    
+      <input type="checkbox" id="m-docsaboutsourcescarevue-check"/>
+      <label for="m-docsaboutsourcescarevue-check"><a href="/docs/about/sources/carevue/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsaboutsourcescarevue"><span class="">CareVue</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsaboutglossary-li">
+    
+      <input type="checkbox" id="m-docsaboutglossary-check"/>
+      <label for="m-docsaboutglossary-check"><a href="/docs/about/glossary/" title="Glossary of terms" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsaboutglossary"><span class="">Glossary</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsgettingstarted-li">
+    
+      <input type="checkbox" id="m-docsgettingstarted-check"/>
+      <label for="m-docsgettingstarted-check"><a href="/docs/gettingstarted/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsgettingstarted"><span class="">Getting Started</span></a></label>
+    
+    
+      
+      <ul class="ul-2 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsgettingstartedcloud-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedcloud-check"/>
+      <label for="m-docsgettingstartedcloud-check"><a href="/docs/gettingstarted/cloud/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsgettingstartedcloud"><span class="">Cloud</span></a></label>
+    
+    
+      
+      <ul class="ul-3 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgettingstartedcloudlink-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedcloudlink-check"/>
+      <label for="m-docsgettingstartedcloudlink-check"><a href="/docs/gettingstarted/cloud/link/" title="Linking your cloud account" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsgettingstartedcloudlink"><span class="">Link</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgettingstartedcloudrequest-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedcloudrequest-check"/>
+      <label for="m-docsgettingstartedcloudrequest-check"><a href="/docs/gettingstarted/cloud/request/" title="Accessing MIMIC-IV on the cloud" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsgettingstartedcloudrequest"><span class="">Request</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgettingstartedcloudbigquery-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedcloudbigquery-check"/>
+      <label for="m-docsgettingstartedcloudbigquery-check"><a href="/docs/gettingstarted/cloud/bigquery/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsgettingstartedcloudbigquery"><span class="">BigQuery</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgettingstartedcloudaws-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedcloudaws-check"/>
+      <label for="m-docsgettingstartedcloudaws-check"><a href="/docs/gettingstarted/cloud/aws/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsgettingstartedcloudaws"><span class="">AWS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgettingstartedcloudgcs-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedcloudgcs-check"/>
+      <label for="m-docsgettingstartedcloudgcs-check"><a href="/docs/gettingstarted/cloud/gcs/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsgettingstartedcloudgcs"><span class="">Google Cloud Storage</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsgettingstartedlocal-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedlocal-check"/>
+      <label for="m-docsgettingstartedlocal-check"><a href="/docs/gettingstarted/local/" title="Local database setup" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsgettingstartedlocal"><span class="">Local</span></a></label>
+    
+    
+      
+      <ul class="ul-3 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgettingstartedlocalinstall-mimic-locally-ubuntu-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedlocalinstall-mimic-locally-ubuntu-check"/>
+      <label for="m-docsgettingstartedlocalinstall-mimic-locally-ubuntu-check"><a href="/docs/gettingstarted/local/install-mimic-locally-ubuntu/" title="Installing MIMIC-III in a local Postgres database" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsgettingstartedlocalinstall-mimic-locally-ubuntu"><span class="">Install MIMIC (Unix/Mac)</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgettingstartedlocalinstall-mimic-locally-windows-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedlocalinstall-mimic-locally-windows-check"/>
+      <label for="m-docsgettingstartedlocalinstall-mimic-locally-windows-check"><a href="/docs/gettingstarted/local/install-mimic-locally-windows/" title="Installing MIMIC-III in a local Postgres database on Windows" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsgettingstartedlocalinstall-mimic-locally-windows"><span class="">Install MIMIC (Windows)</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsgettingstartedquerybuilder-li">
+    
+      <input type="checkbox" id="m-docsgettingstartedquerybuilder-check"/>
+      <label for="m-docsgettingstartedquerybuilder-check"><a href="/docs/gettingstarted/querybuilder/" title="MIMIC Querybuilder" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsgettingstartedquerybuilder"><span class="">Querybuilder</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docscommunity-li">
+    
+      <input type="checkbox" id="m-docscommunity-check"/>
+      <label for="m-docscommunity-check"><a href="/docs/community/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docscommunity"><span class="">Community</span></a></label>
+    
+    
+      
+      <ul class="ul-2 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docscommunitycontributing-li">
+    
+      <input type="checkbox" id="m-docscommunitycontributing-check"/>
+      <label for="m-docscommunitycontributing-check"><a href="/docs/community/contributing/" title="Contributions and questions" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docscommunitycontributing"><span class="">Contributing</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docscommunityguidelines-li">
+    
+      <input type="checkbox" id="m-docscommunityguidelines-check"/>
+      <label for="m-docscommunityguidelines-check"><a href="/docs/community/guidelines/" title="Guidelines for reviewers and authors" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docscommunityguidelines"><span class="">Paper Guidelines</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child active-path" id="m-docsiv-li">
+    
+      <input type="checkbox" id="m-docsiv-check" checked/>
+      <label for="m-docsiv-check"><a href="/docs/iv/" title="MIMIC-IV documentation" class="align-left pl-0  active td-sidebar-link td-sidebar-link__section" id="m-docsiv"><span class="td-sidebar-nav-active-item">MIMIC-IV</span></a></label>
+    
+    
+      
+      <ul class="ul-2 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivabout-li">
+    
+      <input type="checkbox" id="m-docsivabout-check"/>
+      <label for="m-docsivabout-check"><a href="/docs/iv/about/" title="About MIMIC-IV" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivabout"><span class="">About</span></a></label>
+    
+    
+      
+      <ul class="ul-3 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivaboutconcepts-li">
+    
+      <input type="checkbox" id="m-docsivaboutconcepts-check"/>
+      <label for="m-docsivaboutconcepts-check"><a href="/docs/iv/about/concepts/" title="Core concepts" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivaboutconcepts"><span class="">Concepts</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivaboutwhatsnew-li">
+    
+      <input type="checkbox" id="m-docsivaboutwhatsnew-check"/>
+      <label for="m-docsivaboutwhatsnew-check"><a href="/docs/iv/about/whatsnew/" title="What&#39;s new in MIMIC-IV?" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivaboutwhatsnew"><span class="">What&#39;s new?</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivaboutchangelog-li">
+    
+      <input type="checkbox" id="m-docsivaboutchangelog-check"/>
+      <label for="m-docsivaboutchangelog-check"><a href="/docs/iv/about/changelog/" title="MIMIC-IV Change log" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivaboutchangelog"><span class="">Change log</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivmodules-li">
+    
+      <input type="checkbox" id="m-docsivmodules-check"/>
+      <label for="m-docsivmodules-check"><a href="/docs/iv/modules/" title="Tables" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivmodules"><span class="">Modules</span></a></label>
+    
+    
+      
+      <ul class="ul-3 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivmodulescore-li">
+    
+      <input type="checkbox" id="m-docsivmodulescore-check"/>
+      <label for="m-docsivmodulescore-check"><a href="/docs/iv/modules/core/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivmodulescore"><span class="">Core</span></a></label>
+    
+    
+      
+      <ul class="ul-4 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulescoreadmissions-li">
+    
+      <input type="checkbox" id="m-docsivmodulescoreadmissions-check"/>
+      <label for="m-docsivmodulescoreadmissions-check"><a href="/docs/iv/modules/core/admissions/" title="Admissions table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulescoreadmissions"><span class="">admissions</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulescorepatients-li">
+    
+      <input type="checkbox" id="m-docsivmodulescorepatients-check"/>
+      <label for="m-docsivmodulescorepatients-check"><a href="/docs/iv/modules/core/patients/" title="Patients table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulescorepatients"><span class="">patients</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulescoretransfers-li">
+    
+      <input type="checkbox" id="m-docsivmodulescoretransfers-check"/>
+      <label for="m-docsivmodulescoretransfers-check"><a href="/docs/iv/modules/core/transfers/" title="Transfers table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulescoretransfers"><span class="">transfers</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivmoduleshosp-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshosp-check"/>
+      <label for="m-docsivmoduleshosp-check"><a href="/docs/iv/modules/hosp/" title="Hosp" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivmoduleshosp"><span class="">hosp</span></a></label>
+    
+    
+      
+      <ul class="ul-4 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospd_hcpcs-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospd_hcpcs-check"/>
+      <label for="m-docsivmoduleshospd_hcpcs-check"><a href="/docs/iv/modules/hosp/d_hcpcs/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospd_hcpcs"><span class="">d_hcpcs</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospd_icd_diagnoses-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospd_icd_diagnoses-check"/>
+      <label for="m-docsivmoduleshospd_icd_diagnoses-check"><a href="/docs/iv/modules/hosp/d_icd_diagnoses/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospd_icd_diagnoses"><span class="">d_icd_diagnoses</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospd_icd_procedures-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospd_icd_procedures-check"/>
+      <label for="m-docsivmoduleshospd_icd_procedures-check"><a href="/docs/iv/modules/hosp/d_icd_procedures/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospd_icd_procedures"><span class="">d_icd_procedures</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospd_labitems-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospd_labitems-check"/>
+      <label for="m-docsivmoduleshospd_labitems-check"><a href="/docs/iv/modules/hosp/d_labitems/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospd_labitems"><span class="">d_labitems</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospdiagnoses_icd-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospdiagnoses_icd-check"/>
+      <label for="m-docsivmoduleshospdiagnoses_icd-check"><a href="/docs/iv/modules/hosp/diagnoses_icd/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospdiagnoses_icd"><span class="">diagnoses_icd</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospdrgcodes-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospdrgcodes-check"/>
+      <label for="m-docsivmoduleshospdrgcodes-check"><a href="/docs/iv/modules/hosp/drgcodes/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospdrgcodes"><span class="">drgcodes</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospemar-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospemar-check"/>
+      <label for="m-docsivmoduleshospemar-check"><a href="/docs/iv/modules/hosp/emar/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospemar"><span class="">emar</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospemar_detail-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospemar_detail-check"/>
+      <label for="m-docsivmoduleshospemar_detail-check"><a href="/docs/iv/modules/hosp/emar_detail/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospemar_detail"><span class="">emar_detail</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshosphcpcsevents-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshosphcpcsevents-check"/>
+      <label for="m-docsivmoduleshosphcpcsevents-check"><a href="/docs/iv/modules/hosp/hcpcsevents/" title="hpcsevents" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshosphcpcsevents"><span class="">hcpcsevents</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshosplabevents-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshosplabevents-check"/>
+      <label for="m-docsivmoduleshosplabevents-check"><a href="/docs/iv/modules/hosp/labevents/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshosplabevents"><span class="">labevents</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospmicrobiologyevents-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospmicrobiologyevents-check"/>
+      <label for="m-docsivmoduleshospmicrobiologyevents-check"><a href="/docs/iv/modules/hosp/microbiologyevents/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospmicrobiologyevents"><span class="">microbiologyevents</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshosppharmacy-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshosppharmacy-check"/>
+      <label for="m-docsivmoduleshosppharmacy-check"><a href="/docs/iv/modules/hosp/pharmacy/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshosppharmacy"><span class="">pharmacy</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshosppoe-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshosppoe-check"/>
+      <label for="m-docsivmoduleshosppoe-check"><a href="/docs/iv/modules/hosp/poe/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshosppoe"><span class="">poe</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshosppoe_detail-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshosppoe_detail-check"/>
+      <label for="m-docsivmoduleshosppoe_detail-check"><a href="/docs/iv/modules/hosp/poe_detail/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshosppoe_detail"><span class="">poe_detail</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospprescriptions-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospprescriptions-check"/>
+      <label for="m-docsivmoduleshospprescriptions-check"><a href="/docs/iv/modules/hosp/prescriptions/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospprescriptions"><span class="">prescriptions</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospprocedures_icd-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospprocedures_icd-check"/>
+      <label for="m-docsivmoduleshospprocedures_icd-check"><a href="/docs/iv/modules/hosp/procedures_icd/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospprocedures_icd"><span class="">procedures_icd</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleshospservices-li">
+    
+      <input type="checkbox" id="m-docsivmoduleshospservices-check"/>
+      <label for="m-docsivmoduleshospservices-check"><a href="/docs/iv/modules/hosp/services/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleshospservices"><span class="">services</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivmodulesicu-li">
+    
+      <input type="checkbox" id="m-docsivmodulesicu-check"/>
+      <label for="m-docsivmodulesicu-check"><a href="/docs/iv/modules/icu/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivmodulesicu"><span class="">ICU</span></a></label>
+    
+    
+      
+      <ul class="ul-4 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesicud_items-li">
+    
+      <input type="checkbox" id="m-docsivmodulesicud_items-check"/>
+      <label for="m-docsivmodulesicud_items-check"><a href="/docs/iv/modules/icu/d_items/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesicud_items"><span class="">d_items</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesicuchartevents-li">
+    
+      <input type="checkbox" id="m-docsivmodulesicuchartevents-check"/>
+      <label for="m-docsivmodulesicuchartevents-check"><a href="/docs/iv/modules/icu/chartevents/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesicuchartevents"><span class="">chartevents</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesicudatetimesevents-li">
+    
+      <input type="checkbox" id="m-docsivmodulesicudatetimesevents-check"/>
+      <label for="m-docsivmodulesicudatetimesevents-check"><a href="/docs/iv/modules/icu/datetimesevents/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesicudatetimesevents"><span class="">datetimeevents</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesicuicustays-li">
+    
+      <input type="checkbox" id="m-docsivmodulesicuicustays-check"/>
+      <label for="m-docsivmodulesicuicustays-check"><a href="/docs/iv/modules/icu/icustays/" title="ICU stays" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesicuicustays"><span class="">icustays</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesicuinputevents-li">
+    
+      <input type="checkbox" id="m-docsivmodulesicuinputevents-check"/>
+      <label for="m-docsivmodulesicuinputevents-check"><a href="/docs/iv/modules/icu/inputevents/" title="Inputevents" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesicuinputevents"><span class="">inputevents</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesicuoutputevents-li">
+    
+      <input type="checkbox" id="m-docsivmodulesicuoutputevents-check"/>
+      <label for="m-docsivmodulesicuoutputevents-check"><a href="/docs/iv/modules/icu/outputevents/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesicuoutputevents"><span class="">outputevents</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesicuprocedureevents-li">
+    
+      <input type="checkbox" id="m-docsivmodulesicuprocedureevents-check"/>
+      <label for="m-docsivmodulesicuprocedureevents-check"><a href="/docs/iv/modules/icu/procedureevents/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesicuprocedureevents"><span class="">procedureevents</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivmodulesed-li">
+    
+      <input type="checkbox" id="m-docsivmodulesed-check"/>
+      <label for="m-docsivmodulesed-check"><a href="/docs/iv/modules/ed/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivmodulesed"><span class="">ED</span></a></label>
+    
+    
+      
+      <ul class="ul-4 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmoduleseddiagnosis-li">
+    
+      <input type="checkbox" id="m-docsivmoduleseddiagnosis-check"/>
+      <label for="m-docsivmoduleseddiagnosis-check"><a href="/docs/iv/modules/ed/diagnosis/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmoduleseddiagnosis"><span class="">diagnosis table</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesededstays-li">
+    
+      <input type="checkbox" id="m-docsivmodulesededstays-check"/>
+      <label for="m-docsivmodulesededstays-check"><a href="/docs/iv/modules/ed/edstays/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesededstays"><span class="">edstays table</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesedmedrecon-li">
+    
+      <input type="checkbox" id="m-docsivmodulesedmedrecon-check"/>
+      <label for="m-docsivmodulesedmedrecon-check"><a href="/docs/iv/modules/ed/medrecon/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesedmedrecon"><span class="">medrecon table</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesedpyxis-li">
+    
+      <input type="checkbox" id="m-docsivmodulesedpyxis-check"/>
+      <label for="m-docsivmodulesedpyxis-check"><a href="/docs/iv/modules/ed/pyxis/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesedpyxis"><span class="">pyxis table</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesedtriage-li">
+    
+      <input type="checkbox" id="m-docsivmodulesedtriage-check"/>
+      <label for="m-docsivmodulesedtriage-check"><a href="/docs/iv/modules/ed/triage/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesedtriage"><span class="">triage table</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesedvitalsign-li">
+    
+      <input type="checkbox" id="m-docsivmodulesedvitalsign-check"/>
+      <label for="m-docsivmodulesedvitalsign-check"><a href="/docs/iv/modules/ed/vitalsign/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesedvitalsign"><span class="">vitalsign table</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesedvitalsign_hl7-li">
+    
+      <input type="checkbox" id="m-docsivmodulesedvitalsign_hl7-check"/>
+      <label for="m-docsivmodulesedvitalsign_hl7-check"><a href="/docs/iv/modules/ed/vitalsign_hl7/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesedvitalsign_hl7"><span class="">vitalsign_hl7 table</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivmodulescxr-li">
+    
+      <input type="checkbox" id="m-docsivmodulescxr-check"/>
+      <label for="m-docsivmodulescxr-check"><a href="/docs/iv/modules/cxr/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivmodulescxr"><span class="">CXR</span></a></label>
+    
+    
+      
+      <ul class="ul-4 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulescxrrecord_list-li">
+    
+      <input type="checkbox" id="m-docsivmodulescxrrecord_list-check"/>
+      <label for="m-docsivmodulescxrrecord_list-check"><a href="/docs/iv/modules/cxr/record_list/" title="CXR Record List" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulescxrrecord_list"><span class="">cxr_record_list</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivmodulesnote-li">
+    
+      <input type="checkbox" id="m-docsivmodulesnote-check"/>
+      <label for="m-docsivmodulesnote-check"><a href="/docs/iv/modules/note/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivmodulesnote"><span class="">Note</span></a></label>
+    
+    
+      
+      <ul class="ul-4 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesnotedischarge-li">
+    
+      <input type="checkbox" id="m-docsivmodulesnotedischarge-check"/>
+      <label for="m-docsivmodulesnotedischarge-check"><a href="/docs/iv/modules/note/discharge/" title="Discharge" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesnotedischarge"><span class="">discharge</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesnotedischarge_detail-li">
+    
+      <input type="checkbox" id="m-docsivmodulesnotedischarge_detail-check"/>
+      <label for="m-docsivmodulesnotedischarge_detail-check"><a href="/docs/iv/modules/note/discharge_detail/" title="Discharge detail" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesnotedischarge_detail"><span class="">discharge_detail</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesnoteecg-li">
+    
+      <input type="checkbox" id="m-docsivmodulesnoteecg-check"/>
+      <label for="m-docsivmodulesnoteecg-check"><a href="/docs/iv/modules/note/ecg/" title="ECG" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesnoteecg"><span class="">ecg</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesnoteecg_detail-li">
+    
+      <input type="checkbox" id="m-docsivmodulesnoteecg_detail-check"/>
+      <label for="m-docsivmodulesnoteecg_detail-check"><a href="/docs/iv/modules/note/ecg_detail/" title="ECG detail" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesnoteecg_detail"><span class="">ecg_detail</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesnoteecho-li">
+    
+      <input type="checkbox" id="m-docsivmodulesnoteecho-check"/>
+      <label for="m-docsivmodulesnoteecho-check"><a href="/docs/iv/modules/note/echo/" title="Echo" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesnoteecho"><span class="">echo</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesnoteecho_detail-li">
+    
+      <input type="checkbox" id="m-docsivmodulesnoteecho_detail-check"/>
+      <label for="m-docsivmodulesnoteecho_detail-check"><a href="/docs/iv/modules/note/echo_detail/" title="Echo detail" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesnoteecho_detail"><span class="">echo_detail</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesnoteradiology-li">
+    
+      <input type="checkbox" id="m-docsivmodulesnoteradiology-check"/>
+      <label for="m-docsivmodulesnoteradiology-check"><a href="/docs/iv/modules/note/radiology/" title="Radiology" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesnoteradiology"><span class="">radiology</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivmodulesnoteradiology_detail-li">
+    
+      <input type="checkbox" id="m-docsivmodulesnoteradiology_detail-check"/>
+      <label for="m-docsivmodulesnoteradiology_detail-check"><a href="/docs/iv/modules/note/radiology_detail/" title="Radiology detail" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivmodulesnoteradiology_detail"><span class="">radiology_detail</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivtutorials-li">
+    
+      <input type="checkbox" id="m-docsivtutorials-check"/>
+      <label for="m-docsivtutorials-check"><a href="/docs/iv/tutorials/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivtutorials"><span class="">Tutorials</span></a></label>
+    
+    
+      
+      <ul class="ul-3 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivtutorialsvideo-li">
+    
+      <input type="checkbox" id="m-docsivtutorialsvideo-check"/>
+      <label for="m-docsivtutorialsvideo-check"><a href="/docs/iv/tutorials/video/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivtutorialsvideo"><span class="">Video Tutorial</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivtutorialsbigquery-li">
+    
+      <input type="checkbox" id="m-docsivtutorialsbigquery-check"/>
+      <label for="m-docsivtutorialsbigquery-check"><a href="/docs/iv/tutorials/bigquery/" title="BigQuery Tutorial" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivtutorialsbigquery"><span class="">BigQuery</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsivtutorialscxr-li">
+    
+      <input type="checkbox" id="m-docsivtutorialscxr-check"/>
+      <label for="m-docsivtutorialscxr-check"><a href="/docs/iv/tutorials/cxr/" title="MIMIC-CXR" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsivtutorialscxr"><span class="">CXR</span></a></label>
+    
+    
+      
+      <ul class="ul-4 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsivtutorialscxrstudy-li">
+    
+      <input type="checkbox" id="m-docsivtutorialscxrstudy-check"/>
+      <label for="m-docsivtutorialscxrstudy-check"><a href="/docs/iv/tutorials/cxr/study/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsivtutorialscxrstudy"><span class="">MIMIC-CXR tutorials</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsiii-li">
+    
+      <input type="checkbox" id="m-docsiii-check"/>
+      <label for="m-docsiii-check"><a href="/docs/iii/" title="MIMIC-III documentation" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsiii"><span class="">MIMIC-III</span></a></label>
+    
+    
+      
+      <ul class="ul-2 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsiiiabout-li">
+    
+      <input type="checkbox" id="m-docsiiiabout-check"/>
+      <label for="m-docsiiiabout-check"><a href="/docs/iii/about/" title="About MIMIC-III" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsiiiabout"><span class="">About</span></a></label>
+    
+    
+      
+      <ul class="ul-3 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiiaboutdatatypes-li">
+    
+      <input type="checkbox" id="m-docsiiiaboutdatatypes-check"/>
+      <label for="m-docsiiiaboutdatatypes-check"><a href="/docs/iii/about/datatypes/" title="Patient level data: `SUBJECT_ID`" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiiaboutdatatypes"><span class="">Data</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiiaboutidentifiers-li">
+    
+      <input type="checkbox" id="m-docsiiiaboutidentifiers-check"/>
+      <label for="m-docsiiiaboutidentifiers-check"><a href="/docs/iii/about/identifiers/" title="Types of data in the database" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiiaboutidentifiers"><span class="">Patient identifiers</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiiaboutio-li">
+    
+      <input type="checkbox" id="m-docsiiiaboutio-check"/>
+      <label for="m-docsiiiaboutio-check"><a href="/docs/iii/about/io/" title="Inputs and outputs" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiiaboutio"><span class="">Inputs outputs</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiiabouttime-li">
+    
+      <input type="checkbox" id="m-docsiiiabouttime-check"/>
+      <label for="m-docsiiiabouttime-check"><a href="/docs/iii/about/time/" title="Time types" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiiabouttime"><span class="">Times</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiiaboutschema-li">
+    
+      <input type="checkbox" id="m-docsiiiaboutschema-check"/>
+      <label for="m-docsiiiaboutschema-check"><a href="/docs/iii/about/schema/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiiaboutschema"><span class="">Schema</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiiaboutreleasenotes-li">
+    
+      <input type="checkbox" id="m-docsiiiaboutreleasenotes-check"/>
+      <label for="m-docsiiiaboutreleasenotes-check"><a href="/docs/iii/about/releasenotes/" title="Release notes" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiiaboutreleasenotes"><span class="">Releases</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiiaboutwhatsnew-li">
+    
+      <input type="checkbox" id="m-docsiiiaboutwhatsnew-check"/>
+      <label for="m-docsiiiaboutwhatsnew-check"><a href="/docs/iii/about/whatsnew/" title="MIMIC-II vs MIMIC-III" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiiaboutwhatsnew"><span class="">Change log</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsiiitables-li">
+    
+      <input type="checkbox" id="m-docsiiitables-check"/>
+      <label for="m-docsiiitables-check"><a href="/docs/iii/tables/" title="Overview of the MIMIC-III data" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsiiitables"><span class="">Tables</span></a></label>
+    
+    
+      
+      <ul class="ul-3 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesadmissions-li">
+    
+      <input type="checkbox" id="m-docsiiitablesadmissions-check"/>
+      <label for="m-docsiiitablesadmissions-check"><a href="/docs/iii/tables/admissions/" title="The admissions table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesadmissions"><span class="">ADMISSIONS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablescallout-li">
+    
+      <input type="checkbox" id="m-docsiiitablescallout-check"/>
+      <label for="m-docsiiitablescallout-check"><a href="/docs/iii/tables/callout/" title="The callout table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablescallout"><span class="">CALLOUT</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablescaregivers-li">
+    
+      <input type="checkbox" id="m-docsiiitablescaregivers-check"/>
+      <label for="m-docsiiitablescaregivers-check"><a href="/docs/iii/tables/caregivers/" title="The caregivers table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablescaregivers"><span class="">CAREGIVERS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitableschartevents-li">
+    
+      <input type="checkbox" id="m-docsiiitableschartevents-check"/>
+      <label for="m-docsiiitableschartevents-check"><a href="/docs/iii/tables/chartevents/" title="The chartevents table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitableschartevents"><span class="">CHARTEVENTS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablescptevents-li">
+    
+      <input type="checkbox" id="m-docsiiitablescptevents-check"/>
+      <label for="m-docsiiitablescptevents-check"><a href="/docs/iii/tables/cptevents/" title="The cptevents table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablescptevents"><span class="">CPTEVENTS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesd_cpt-li">
+    
+      <input type="checkbox" id="m-docsiiitablesd_cpt-check"/>
+      <label for="m-docsiiitablesd_cpt-check"><a href="/docs/iii/tables/d_cpt/" title="The d_cpt table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesd_cpt"><span class="">D_CPT</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesd_icd_diagnoses-li">
+    
+      <input type="checkbox" id="m-docsiiitablesd_icd_diagnoses-check"/>
+      <label for="m-docsiiitablesd_icd_diagnoses-check"><a href="/docs/iii/tables/d_icd_diagnoses/" title="The d_icd_diagnoses table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesd_icd_diagnoses"><span class="">D_ICD_DIAGNOSES</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesd_icd_procedures-li">
+    
+      <input type="checkbox" id="m-docsiiitablesd_icd_procedures-check"/>
+      <label for="m-docsiiitablesd_icd_procedures-check"><a href="/docs/iii/tables/d_icd_procedures/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesd_icd_procedures"><span class="">D_ICD_PROCEDURES</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesd_items-li">
+    
+      <input type="checkbox" id="m-docsiiitablesd_items-check"/>
+      <label for="m-docsiiitablesd_items-check"><a href="/docs/iii/tables/d_items/" title="The d_items table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesd_items"><span class="">D_ITEMS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesd_labitems-li">
+    
+      <input type="checkbox" id="m-docsiiitablesd_labitems-check"/>
+      <label for="m-docsiiitablesd_labitems-check"><a href="/docs/iii/tables/d_labitems/" title="The d_labitems table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesd_labitems"><span class="">D_LABITEMS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesdatetimeevents-li">
+    
+      <input type="checkbox" id="m-docsiiitablesdatetimeevents-check"/>
+      <label for="m-docsiiitablesdatetimeevents-check"><a href="/docs/iii/tables/datetimeevents/" title="The datetimeevents table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesdatetimeevents"><span class="">DATETIMEEVENTS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesdiagnoses_icd-li">
+    
+      <input type="checkbox" id="m-docsiiitablesdiagnoses_icd-check"/>
+      <label for="m-docsiiitablesdiagnoses_icd-check"><a href="/docs/iii/tables/diagnoses_icd/" title="The diagnoses_icd table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesdiagnoses_icd"><span class="">DIAGNOSES_ICD</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesdrgcodes-li">
+    
+      <input type="checkbox" id="m-docsiiitablesdrgcodes-check"/>
+      <label for="m-docsiiitablesdrgcodes-check"><a href="/docs/iii/tables/drgcodes/" title="The drgcodes table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesdrgcodes"><span class="">DRGCODES</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesicustays-li">
+    
+      <input type="checkbox" id="m-docsiiitablesicustays-check"/>
+      <label for="m-docsiiitablesicustays-check"><a href="/docs/iii/tables/icustays/" title="The icustays table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesicustays"><span class="">ICUSTAYS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesinputevents_cv-li">
+    
+      <input type="checkbox" id="m-docsiiitablesinputevents_cv-check"/>
+      <label for="m-docsiiitablesinputevents_cv-check"><a href="/docs/iii/tables/inputevents_cv/" title="The inputevents_cv table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesinputevents_cv"><span class="">INPUTEVENTS_CV</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesinputevents_mv-li">
+    
+      <input type="checkbox" id="m-docsiiitablesinputevents_mv-check"/>
+      <label for="m-docsiiitablesinputevents_mv-check"><a href="/docs/iii/tables/inputevents_mv/" title="The inputevents_mv table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesinputevents_mv"><span class="">INPUTEVENTS_MV</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitableslabevents-li">
+    
+      <input type="checkbox" id="m-docsiiitableslabevents-check"/>
+      <label for="m-docsiiitableslabevents-check"><a href="/docs/iii/tables/labevents/" title="The labevents table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitableslabevents"><span class="">LABEVENTS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesmicrobiologyevents-li">
+    
+      <input type="checkbox" id="m-docsiiitablesmicrobiologyevents-check"/>
+      <label for="m-docsiiitablesmicrobiologyevents-check"><a href="/docs/iii/tables/microbiologyevents/" title="The microbiologyevents table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesmicrobiologyevents"><span class="">MICROBIOLOGYEVENTS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesnoteevents-li">
+    
+      <input type="checkbox" id="m-docsiiitablesnoteevents-check"/>
+      <label for="m-docsiiitablesnoteevents-check"><a href="/docs/iii/tables/noteevents/" title="The noteevents table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesnoteevents"><span class="">NOTEEVENTS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesoutputevents-li">
+    
+      <input type="checkbox" id="m-docsiiitablesoutputevents-check"/>
+      <label for="m-docsiiitablesoutputevents-check"><a href="/docs/iii/tables/outputevents/" title="The outputevents table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesoutputevents"><span class="">OUTPUTEVENTS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablespatients-li">
+    
+      <input type="checkbox" id="m-docsiiitablespatients-check"/>
+      <label for="m-docsiiitablespatients-check"><a href="/docs/iii/tables/patients/" title="The patients table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablespatients"><span class="">PATIENTS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesprescriptions-li">
+    
+      <input type="checkbox" id="m-docsiiitablesprescriptions-check"/>
+      <label for="m-docsiiitablesprescriptions-check"><a href="/docs/iii/tables/prescriptions/" title="The prescriptions table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesprescriptions"><span class="">PRESCRIPTIONS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesprocedureevents_mv-li">
+    
+      <input type="checkbox" id="m-docsiiitablesprocedureevents_mv-check"/>
+      <label for="m-docsiiitablesprocedureevents_mv-check"><a href="/docs/iii/tables/procedureevents_mv/" title="The procedureevents_mv table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesprocedureevents_mv"><span class="">PROCEDUREEVENTS_MV</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesprocedures_icd-li">
+    
+      <input type="checkbox" id="m-docsiiitablesprocedures_icd-check"/>
+      <label for="m-docsiiitablesprocedures_icd-check"><a href="/docs/iii/tables/procedures_icd/" title="The procedures_icd table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesprocedures_icd"><span class="">PROCEDURES_ICD</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablesservices-li">
+    
+      <input type="checkbox" id="m-docsiiitablesservices-check"/>
+      <label for="m-docsiiitablesservices-check"><a href="/docs/iii/tables/services/" title="The services table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablesservices"><span class="">SERVICES</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitablestransfers-li">
+    
+      <input type="checkbox" id="m-docsiiitablestransfers-check"/>
+      <label for="m-docsiiitablestransfers-check"><a href="/docs/iii/tables/transfers/" title="The transfers table" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitablestransfers"><span class="">TRANSFERS</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiidemo-li">
+    
+      <input type="checkbox" id="m-docsiiidemo-check"/>
+      <label for="m-docsiiidemo-check"><a href="/docs/iii/demo/" title="MIMIC-III demo" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiidemo"><span class="">Demo</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiiwaveforms-li">
+    
+      <input type="checkbox" id="m-docsiiiwaveforms-check"/>
+      <label for="m-docsiiiwaveforms-check"><a href="/docs/iii/waveforms/" title="Waveforms vs. clinical data" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiiwaveforms"><span class="">Waveforms</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsiiitutorials-li">
+    
+      <input type="checkbox" id="m-docsiiitutorials-check"/>
+      <label for="m-docsiiitutorials-check"><a href="/docs/iii/tutorials/" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsiiitutorials"><span class="">Tutorials</span></a></label>
+    
+    
+      
+      <ul class="ul-3 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitutorialsintro-to-mimic-iii-li">
+    
+      <input type="checkbox" id="m-docsiiitutorialsintro-to-mimic-iii-check"/>
+      <label for="m-docsiiitutorialsintro-to-mimic-iii-check"><a href="/docs/iii/tutorials/intro-to-mimic-iii/" title="Querying MIMIC-III in Postgres" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitutorialsintro-to-mimic-iii"><span class="">Postgres queries</span></a></label>
+    
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiiitutorialsintro-to-mimic-iii-bq-li">
+    
+      <input type="checkbox" id="m-docsiiitutorialsintro-to-mimic-iii-bq-check"/>
+      <label for="m-docsiiitutorialsintro-to-mimic-iii-bq-check"><a href="/docs/iii/tutorials/intro-to-mimic-iii-bq/" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiiitutorialsintro-to-mimic-iii-bq"><span class="">BigQuery</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id="m-docsii-li">
+    
+      <input type="checkbox" id="m-docsii-check"/>
+      <label for="m-docsii-check"><a href="/docs/ii/" title="MIMIC-II documentation" class="align-left pl-0  td-sidebar-link td-sidebar-link__section" id="m-docsii"><span class="">MIMIC-II</span></a></label>
+    
+    
+      
+      <ul class="ul-2 foldable">
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id="m-docsiimimic-releases-li">
+    
+      <input type="checkbox" id="m-docsiimimic-releases-check"/>
+      <label for="m-docsiimimic-releases-check"><a href="/docs/ii/mimic-releases/" title="MIMIC-II v2.6" class="align-left pl-0  td-sidebar-link td-sidebar-link__page" id="m-docsiimimic-releases"><span class="">MIMIC-II releases</span></a></label>
+    
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+          
+        
+      </ul>
+    
+  </li>
+
+    </ul>
+  </nav>
+</div>
+
+
+
+
+          </aside>
+          <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
+            
+  
+  
+  
+  
+  
+  
+  <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
+  
+    
+    
+      
+    
+    
+    
+    
+    
+    
+    
+
+    <a href="https://github.com/MIT-LCP/mimic-website/edit/main///content/en/docs/IV/_index.md" target="_blank"><i class="fa fa-edit fa-fw"></i> Edit this page</a>
+    <a href="https://github.com/MIT-LCP/mimic-website/new/main///content/en/docs/IV/_index.md?filename=change-me.md&amp;value=---%0Atitle%3A&#43;%22Long&#43;Page&#43;Title%22%0AlinkTitle%3A&#43;%22Short&#43;Nav&#43;Title%22%0Aweight%3A&#43;100%0Adescription%3A&#43;%3E-%0A&#43;&#43;&#43;&#43;&#43;Page&#43;description&#43;for&#43;heading&#43;and&#43;indexes.%0A---%0A%0A%23%23&#43;Heading%0A%0AEdit&#43;this&#43;template&#43;to&#43;create&#43;your&#43;new&#43;page.%0A%0A%2A&#43;Give&#43;it&#43;a&#43;good&#43;name%2C&#43;ending&#43;in&#43;%60.md%60&#43;-&#43;e.g.&#43;%60getting-started.md%60%0A%2A&#43;Edit&#43;the&#43;%22front&#43;matter%22&#43;section&#43;at&#43;the&#43;top&#43;of&#43;the&#43;page&#43;%28weight&#43;controls&#43;how&#43;its&#43;ordered&#43;amongst&#43;other&#43;pages&#43;in&#43;the&#43;same&#43;directory%3B&#43;lowest&#43;number&#43;first%29.%0A%2A&#43;Add&#43;a&#43;good&#43;commit&#43;message&#43;at&#43;the&#43;bottom&#43;of&#43;the&#43;page&#43;%28%3C80&#43;characters%3B&#43;use&#43;the&#43;extended&#43;description&#43;field&#43;for&#43;more&#43;detail%29.%0A%2A&#43;Create&#43;a&#43;new&#43;branch&#43;so&#43;you&#43;can&#43;preview&#43;your&#43;new&#43;file&#43;and&#43;request&#43;a&#43;review&#43;via&#43;Pull&#43;Request.%0A" target="_blank"><i class="fa fa-edit fa-fw"></i> Create child page</a>
+    <a href="https://github.com/MIT-LCP/mimic-website/issues/new?title=MIMIC-IV%20documentation" target="_blank"><i class="fab fa-github fa-fw"></i> Create documentation issue</a>
+    
+
+  
+  
+  </div>
+
+
+            
+
+
+
+
+            
+
+	
+		
+
+
+
+  
+  
+
+	
+		
+
+
+
+  
+  
+
+	
+
+          </aside>
+          <main class="col-12 col-md-9 col-xl-8 pl-md-5" role="main">
+            
+  
+
+            <nav aria-label="breadcrumb" class="d-none d-md-block d-print-none">
+	<ol class="breadcrumb spb-1">
+		
+
+
+
+
+
+
+
+<li class="breadcrumb-item" >
+	<a href="https://mimic.mit.edu/docs/">Docs</a>
+</li>
+
+
+
+
+<li class="breadcrumb-item active" aria-current="page">
+	<a href="https://mimic.mit.edu/docs/iv/">MIMIC-IV</a>
+</li>
+
+	</ol>
+</nav	>
+
+            
+<div class="td-content">
+	<h1>MIMIC-IV documentation</h1>
+  
+	<header class="article-meta">
+		
+		
+			
+				
+
+
+			
+				
+
+
+			
+		
+		
+	</header>
+	<p>MIMIC-IV is a relational database containing real hospital stays for patients admitted to a tertiary academic medical center in Boston, MA, USA. MIMIC-IV contains comprehensive information for each patient while they were in the hospital: laboratory measurements, medications administered, vital signs documented, and so on.
+The database is intended to support a wide variety of research in healthcare.
+MIMIC-IV builds upon the success of <a href="/docs/iii">MIMIC-III</a>, and incorporates numerous improvements over MIMIC-III.</p>
+<p>MIMIC-IV is separated into &ldquo;modules&rdquo; to reflect the provenance of the data. There are currently five modules:</p>
+<ul>
+<li><a href="/docs/iv/modules/core">core</a> - patient stay information (i.e. admissions and transfers)</li>
+<li><a href="/docs/iv/modules/hosp">hosp</a> - hospital level data for patients: labs, micro, and electronic medication administration</li>
+<li><a href="/docs/iv/modules/icu">icu</a> - ICU level data. These are the event tables, and are identical in structure to MIMIC-III (chartevents, etc)</li>
+<li><a href="/docs/iv/modules/ed">ed</a> - data from the emergency department</li>
+<li><a href="/docs/iv/modules/cxr">cxr</a> - lookup tables and meta-data from MIMIC-CXR, allowing linking to MIMIC-IV</li>
+<li><a href="/docs/iv/modules/note">note</a> - deidentified free-text clinical notes</li>
+</ul>
+
+
+<div class="pageinfo pageinfo-primary">
+<p>MIMIC-Note is currently not publicly available and the structure is subject to change.</p>
+
+</div>
+
+<p>All patients across all datasets are in <code>mimic_core</code>. However, not all ICU patients have ED data, not all ICU patients have CXRs, not all ED patients have hospital data, and so on. Within an individual dataset, there are also incomplete tables as certain electronic systems did not exist in the past. For example, eMAR data is only available from 2015 onward.</p>
+<p>Tables for each module are detailed in the respective sections.</p>
+
+        <div class="section-index">
+    
+    
+    
+    
+    
+    <hr class="panel-line">
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                
+                <div class="entry">
+                    <h5>
+                        <a href="/docs/iv/about/">About MIMIC-IV</a>
+                    </h5>
+                    <p>Introduction to MIMIC-IV including what the dataset is and what&rsquo;s changed since MIMIC-III.</p>
+                </div>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                
+                <div class="entry">
+                    <h5>
+                        <a href="/docs/iv/modules/">Tables</a>
+                    </h5>
+                    <p>Description of the data contained in the MIMIC-IV tables.</p>
+                </div>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+                
+                <div class="entry">
+                    <h5>
+                        <a href="/docs/iv/tutorials/">Tutorials</a>
+                    </h5>
+                    <p>Tutorials using MIMIC-IV.</p>
+                </div>
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+    
+</div>
+
+	
+		<style>
+  .feedback--answer {
+    display: inline-block;
+  }
+  .feedback--answer-no {
+    margin-left: 1em;
+  }
+  .feedback--response {
+    display: none;
+    margin-top: 1em;
+  }
+  .feedback--response__visible {
+    display: block;
+  }
+</style>
+<div class="d-print-none">
+<h2 class="feedback--title">Feedback</h2>
+<p class="feedback--question">Was this page helpful?</p>
+<button class="btn btn-primary mb-4 feedback--answer feedback--answer-yes">Yes</button>
+<button class="btn btn-primary mb-4 feedback--answer feedback--answer-no">No</button>
+<p class="feedback--response feedback--response-yes">
+  Glad to hear it! Please raise an issue <a href="https://github.com/MIT-LCP/mimic-website/issues">here</a> to tell us how we can improve.
+</p>
+<p class="feedback--response feedback--response-no">
+  Sorry to hear that. Please raise an issue <a href="https://github.com/MIT-LCP/mimic-website/issues">here</a> to tell us how we can improve.
+</p>
+</div>
+<script>
+  const yesButton = document.querySelector('.feedback--answer-yes');
+  const noButton = document.querySelector('.feedback--answer-no');
+  const yesResponse = document.querySelector('.feedback--response-yes');
+  const noResponse = document.querySelector('.feedback--response-no');
+  const disableButtons = () => {
+    yesButton.disabled = true;
+    noButton.disabled = true;
+  };
+  const sendFeedback = (value) => {
+    if (typeof ga !== 'function') return;
+    const args = {
+      command: 'send',
+      hitType: 'event',
+      category: 'Helpful',
+      action: 'click',
+      label: window.location.pathname,
+      value: value
+    };
+    ga(args.command, args.hitType, args.category, args.action, args.label, args.value);
+  };
+  yesButton.addEventListener('click', () => {
+    yesResponse.classList.add('feedback--response__visible');
+    disableButtons();
+    sendFeedback(1);
+  });
+  noButton.addEventListener('click', () => {
+    noResponse.classList.add('feedback--response__visible');
+    disableButtons();
+    sendFeedback(0);
+  });
+</script>
+
+		<br />
+	
+	
+	<div class="text-muted mt-5 pt-3 border-top">
+
+</div>
+
+</div>
+
+          </main>
+        </div>
+      </div>
+      
+<footer class="bg-dark py-5 row d-print-none">
+  <div class="container-fluid mx-sm-5">
+    <div class="row">
+      <div class="col-6 col-sm-4 text-xs-center order-sm-2">
+        
+      </div>
+      <div class="col-6 col-sm-4 text-right text-xs-center order-sm-3">
+        
+      </div>
+      <div class="col-12 col-sm-4 text-center py-2 order-sm-2">
+        <small class="text-white">&copy; 2021 MIT-LCP All Rights Reserved</small>
+        
+	
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+<script src="/js/main.min.488da79699f71f0b67e37c140485f5102e5c4b909f05bf734c87a901b60a83ae.js" integrity="sha256-SI2nlpn3Hwtn43wUBIX1EC5cS5CfBb9zTIepAbYKg64=" crossorigin="anonymous"></script>
+
+
+
+
+  </body>
+</html>
