@@ -42,3 +42,6 @@ vignettes/*.pdf
 *_files/
 *_cache/
 
+# hw solutions
+*_hw2solu.Rmd
+*_hw2solu.html
