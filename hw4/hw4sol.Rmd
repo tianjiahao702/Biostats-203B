@@ -63,7 +63,120 @@ In conclusion, in the same dataset, variables that are MCAR which don't need to 
 
 2. Explain in a couple of sentences how the Multiple Imputation by Chained Equations (MICE) work.
 
+**Solution:**
+
+First select a variable to impute, then randomly complete missing entries for all other variables.
+Also, it can the variables as features in the prediction model. Iterate across variables until all have been
+imputed. Repeat, starting from the imputed dataset, until convergence.
+
 3. Perform a data quality check of the ICU stays data. Discard variables with substantial missingness, say >5000 `NA`s. Replace apparent data entry errors by `NA`s.
+
+**Solution:**
+
+```{r}
+
+path <- "~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw3"
+data <- readRDS(
+  "~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw3/mimic_icu_cohort.rds")
+# Identify variables to remove
+popvar <- c("Gender",
+            "Ethnicity", "Language",
+            "Insurance", "Marital Status")
+data <- data %>% 
+  select(-any_of(popvar))
+print(data, width = Inf)
+```
+
+Now we have `r nrow(data)` observations and `r ncol(data)` variables. Also, it is important to note that the appropriate way of summarizing variables (and, later, of modeling their missingness) would vary for numeric versus categorical variables, so I would explore them separately. Let's first look at the categorical variables, exploring their distribution by the outcome of interest.
+
+```{r, cache=TRUE}
+library("SmartEDA")
+catvars <- c("thirty_day_mort",
+             "first_careunit",
+             "admission_type",
+             "admission_location",
+             "insurance",
+             "language",
+             "marital_status",
+             "ethnicity",
+             "gender")
+# Create table for categorical variables
+data %>%
+  select(all_of(catvars)) %>%
+  ExpCTable(Target = "thirty_day_mort",
+            margin=1, clim=10, nlim=3,
+            round=2, bin=NULL, per=FALSE)
+```
+
+
+```{r, cache=TRUE}
+numvars <- data %>%
+  select(-any_of(catvars)) %>%
+  names()
+data %>% 
+  select(all_of(numvars), "thirty_day_mort") %>%
+  ExpNumStat(by = "G", gp = "thirty_day_mort",
+             Qnt = seq(0,1,0.25),
+             MesofShape = 1,
+             Outlier = TRUE,
+             round = 2)
+```
+
+
+
+data <- 
+  data %>%
+  mutate(speaks_english = 
+           ifelse(language=="ENGLISH", 1, 0),
+         # Recode as NA in ethnicity
+         ethnicity =
+           case_when(
+             ethnicity=="UNABLE TO OBTAIN" ~ "NOT REGISTERED",
+             ethnicity=="UNKNOWN" ~ "NOT REGISTERED",
+             TRUE ~ ethnicity
+           ),
+         # Indicator for having arterial bp
+         bp_recorded =
+           case_when(
+             is.na(Noninvasive blood pressure mean) ~ 0L,
+             is.na(arterial_blood_pressure_systolic) ~ 0L,
+             TRUE ~ 1L
+           ),
+         # Indicator for lactate
+         lactate_recorded = ifelse(is.na(lactate), 0, 1),
+         # Transform admittime
+         # To have some seasonality information
+         # First, time of the day (am vs pm)
+         is_am = lubridate::am(admittime) %>%
+           as.numeric(),
+         # Epidemiological week
+         epi_week = lubridate::epiweek(admittime),
+         # Epidemiological year
+         epi_year = lubridate::epiyear(admittime))
+```
+# Remove variables already used
+data <- 
+  data %>% 
+  select(-c("Noninvasive blood pressure mean",
+           "Noninvasive blood pressure systolic",
+           "lactate",
+           "language",
+           "admittime"))
+# Update our variable listing
+# In catvars, replace language by the recoded version
+catvars <- c(catvars[-6], # remove language
+             "speaks_english",
+             "arterial_bp_recorded",
+             "lactate_recorded",
+             "is_am")
+# In numvars, drop used ones and add newly created
+# remove admittime, arterial bp, lactate
+numvars <- c(numvars[-c(1,8,9,20)], 
+             "epi_week","epi_year")
+```
+
+We still care about some outliers, as appearing in our exploration (here and in the previous homework). I will use a somewhat common, crude but still useful measure to identify outliers, as $\pm 3 SD$. The reason for this choice is that it is less strict than other alternatives ($\pm 2 SD$, $\pm 1.5\text{ IQR}$), but in the context at hand we would want to allow for some extreme values, while still caughting those that most likely come from errors of measurement. 
+
 
 4. Impute missing values by `miceRanger` (request $m=3$ data sets). This step is computational intensive. Make sure to save the imputation results as a file. Hint: Setting `max.depth=10` in the `miceRanger` function may cut some computing time.
 
