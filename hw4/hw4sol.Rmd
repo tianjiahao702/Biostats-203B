@@ -22,6 +22,7 @@ Load database libraries and the tidyverse frontend:
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(lubridate))
 suppressPackageStartupMessages(library(miceRanger))
+library("SmartEDA")
 ```
 
 ## Q1. Missing data
@@ -76,22 +77,25 @@ imputed. Repeat, starting from the imputed dataset, until convergence.
 ```{r}
 
 path <- "~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw3"
-data <- readRDS(
-  "~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw3/mimic_icu_cohort.rds")
-# Identify variables to remove
-popvar <- c("Gender",
-            "Ethnicity", "Language",
-            "Insurance", "Marital Status")
-data <- data %>% 
-  select(-any_of(popvar))
+data <- readRDS("~/Desktop/Biostats 203B/mimic_icu_cohort.rds")
+rmvar <- c("subject_id", "hadm_id",
+             "stay_id", "last_careunit",
+             "intime",
+             "edregtime","edouttime",
+             "outtime","los",
+             "dischtime","deathtime",
+             "discharge_location",
+             "edouttime",
+             "hospital_expire_flag",
+             "anchor_year","anchor_year_group",
+             "dod", "deathdiff")
+data <- data %>% select(-any_of(rmvar))
 print(data, width = Inf)
 ```
 
-Now we have `r nrow(data)` observations and `r ncol(data)` variables. Also, it is important to note that the appropriate way of summarizing variables (and, later, of modeling their missingness) would vary for numeric versus categorical variables, so I would explore them separately. Let's first look at the categorical variables, exploring their distribution by the outcome of interest.
 
 ```{r, cache=TRUE}
-library("SmartEDA")
-catvars <- c("thirty_day_mort",
+rmcatg <- c("mort30",
              "first_careunit",
              "admission_type",
              "admission_location",
@@ -100,10 +104,9 @@ catvars <- c("thirty_day_mort",
              "marital_status",
              "ethnicity",
              "gender")
-# Create table for categorical variables
 data %>%
-  select(all_of(catvars)) %>%
-  ExpCTable(Target = "thirty_day_mort",
+  select(all_of(rmcatg)) %>%
+  ExpCTable(Target = "mort30",
             margin=1, clim=10, nlim=3,
             round=2, bin=NULL, per=FALSE)
 ```
@@ -111,11 +114,11 @@ data %>%
 
 ```{r, cache=TRUE}
 numvars <- data %>%
-  select(-any_of(catvars)) %>%
+  select(-any_of(rmcatg)) %>%
   names()
 data %>% 
-  select(all_of(numvars), "thirty_day_mort") %>%
-  ExpNumStat(by = "G", gp = "thirty_day_mort",
+  select(all_of(numvars), "mort30") %>%
+  ExpNumStat(by = "G", gp = "mort30",
              Qnt = seq(0,1,0.25),
              MesofShape = 1,
              Outlier = TRUE,
@@ -123,66 +126,111 @@ data %>%
 ```
 
 
-
-data <- 
-  data %>%
-  mutate(speaks_english = 
-           ifelse(language=="ENGLISH", 1, 0),
-         # Recode as NA in ethnicity
+```{r, cache=TRUE}
+data <- data %>%
+  mutate(speaks_english = ifelse(language=="ENGLISH", 1, 0),
          ethnicity =
            case_when(
              ethnicity=="UNABLE TO OBTAIN" ~ "NOT REGISTERED",
              ethnicity=="UNKNOWN" ~ "NOT REGISTERED",
              TRUE ~ ethnicity
            ),
-         # Indicator for having arterial bp
-         bp_recorded =
+         arterial_bp_recorded =
            case_when(
-             is.na(Noninvasive blood pressure mean) ~ 0L,
+             is.na(arterial_blood_pressure_mean) ~ 0L,
              is.na(arterial_blood_pressure_systolic) ~ 0L,
              TRUE ~ 1L
            ),
-         # Indicator for lactate
          lactate_recorded = ifelse(is.na(lactate), 0, 1),
-         # Transform admittime
-         # To have some seasonality information
-         # First, time of the day (am vs pm)
          is_am = lubridate::am(admittime) %>%
            as.numeric(),
-         # Epidemiological week
          epi_week = lubridate::epiweek(admittime),
-         # Epidemiological year
          epi_year = lubridate::epiyear(admittime))
-```
-# Remove variables already used
-data <- 
-  data %>% 
-  select(-c("Noninvasive blood pressure mean",
-           "Noninvasive blood pressure systolic",
+data <-  data %>% 
+  select(-c("arterial_blood_pressure_mean",
+           "arterial_blood_pressure_systolic",
            "lactate",
            "language",
            "admittime"))
-# Update our variable listing
-# In catvars, replace language by the recoded version
-catvars <- c(catvars[-6], # remove language
+rmcatg <- c(rmcatg[-6], 
              "speaks_english",
              "arterial_bp_recorded",
              "lactate_recorded",
              "is_am")
-# In numvars, drop used ones and add newly created
-# remove admittime, arterial bp, lactate
 numvars <- c(numvars[-c(1,8,9,20)], 
              "epi_week","epi_year")
 ```
 
-We still care about some outliers, as appearing in our exploration (here and in the previous homework). I will use a somewhat common, crude but still useful measure to identify outliers, as $\pm 3 SD$. The reason for this choice is that it is less strict than other alternatives ($\pm 2 SD$, $\pm 1.5\text{ IQR}$), but in the context at hand we would want to allow for some extreme values, while still caughting those that most likely come from errors of measurement. 
+```{r, cache=TRUE}
+z_scores <- as.data.frame(
+    sapply(data %>% select(all_of(numvars)),
+           function(df) (abs(df-mean(df,na.rm = TRUE))/sd(df,na.rm = TRUE))))
+for(i in numvars){
+  aux <- z_scores[,i]
+  data[which(aux>=3),i] <- NA
+}
+data %>% 
+  select(all_of(numvars)) %>%
+  summary()
+```
 
 
-4. Impute missing values by `miceRanger` (request $m=3$ data sets). This step is computational intensive. Make sure to save the imputation results as a file. Hint: Setting `max.depth=10` in the `miceRanger` function may cut some computing time.
+4. Impute missing values by `miceRanger` (request $m=3$ data sets). This step is computational intensive.
+Make sure to save the imputation results as a file. Hint: Setting `max.depth=10` in the `miceRanger` function
+may cut some computing time.
+
+**Solution:**
+
 
 5. Make imputation diagnostic plots and explain what they mean.
 
-6. Choose one of the imputed data sets to be used in Q2. This is **not** a good idea to use just one imputed data set or to average multiple imputed data sets. Explain in a couple of sentences what the correct Multiple Imputation strategy is.
+**Solution:**
+
+{r}
+plotModelError(micedata)
+```
+
+From the model error plot, for the heart rate variables, sodium, hematocrit and wbc, which are less well
+captured by the model.
+
+{r}
+plotDistributions(micedata,
+                  vars='allNumeric')
+```
+
+From the numerical variables, heart rate and respiratory rate both are less skewed, but for sodium, which got
+a higher spread from the original data.
+
+{r}
+plotDistributions(micedata,
+                  vars='allCategorical')
+```
+
+From the categorical variables, there are  less married  and more single people. So the model thinks that
+for single stauts, they are more likely to have missing their marital status.
+
+
+6.Choose one of the imputed data sets to be used in Q2. This is **not** a good idea to use just one imputed
+data set or to average multiple imputed data sets. Explain in a couple of sentences what the correct Multiple
+Imputation strategy is.
+
+**Solution:**
+
+{r, eval = FALSE}
+d_lis <- completeData(micedata)
+datam <- 
+  lapply(seq_along(d_lis),
+         function(i) model.matrix(mort30 ~., data = d_lis[[i]]))
+dataname <- colnames(datam[[1]])
+datam <- array(unlist(datam), 
+                   dim = c(nrow(datam[[1]]),
+                           ncol(datam[[1]]),3))
+datamice <- rowMeans(datam, dims = 2) %>%
+  as.data.frame()
+names(datamice) <- dataname
+write_csv(datamice, "datamice.csv")
+```
+
 
 ## Q2. Predicting 30-day mortality
 

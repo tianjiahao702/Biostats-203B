@@ -203,7 +203,8 @@ pre code {
 <p>Load database libraries and the tidyverse frontend:</p>
 <pre class="r"><code>suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(lubridate))
-suppressPackageStartupMessages(library(miceRanger))</code></pre>
+suppressPackageStartupMessages(library(miceRanger))
+library(&quot;SmartEDA&quot;)</code></pre>
 <div id="q1.-missing-data" class="section level2">
 <h2>Q1. Missing data</h2>
 <p>Through the Shiny app developed in HW3, we observe abundant missing values in the MIMIC-IV ICU cohort we created. In this question, we use multiple imputation to obtain a data set without missing values.</p>
@@ -227,143 +228,107 @@ suppressPackageStartupMessages(library(miceRanger))</code></pre>
 </ol>
 <p><strong>Solution:</strong></p>
 <pre class="r"><code>path &lt;- &quot;~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw3&quot;
-data &lt;- readRDS(
-  &quot;~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw3/mimic_icu_cohort.rds&quot;)
-# Identify variables to remove
-popvar &lt;- c(&quot;Gender&quot;,
-            &quot;Ethnicity&quot;, &quot;Language&quot;,
-            &quot;Insurance&quot;, &quot;Marital Status&quot;)
-data &lt;- data %&gt;% 
-  select(-any_of(popvar))
+data &lt;- readRDS(&quot;~/Desktop/Biostats 203B/mimic_icu_cohort.rds&quot;)
+rmvar &lt;- c(&quot;subject_id&quot;, &quot;hadm_id&quot;,
+             &quot;stay_id&quot;, &quot;last_careunit&quot;,
+             &quot;intime&quot;,
+             &quot;edregtime&quot;,&quot;edouttime&quot;,
+             &quot;outtime&quot;,&quot;los&quot;,
+             &quot;dischtime&quot;,&quot;deathtime&quot;,
+             &quot;discharge_location&quot;,
+             &quot;edouttime&quot;,
+             &quot;hospital_expire_flag&quot;,
+             &quot;anchor_year&quot;,&quot;anchor_year_group&quot;,
+             &quot;dod&quot;, &quot;deathdiff&quot;)
+data &lt;- data %&gt;% select(-any_of(rmvar))
 print(data, width = Inf)</code></pre>
-<pre><code>## # A tibble: 7,917 × 44
-##    subject_id intime               hadm_id  stay_id
-##         &lt;int&gt; &lt;dttm&gt;                 &lt;int&gt;    &lt;int&gt;
-##  1   18190935 2115-11-12 23:23:32 21137829 34338402
-##  2   13573921 2149-01-20 20:39:00 22567440 33077303
-##  3   13819466 2130-09-13 03:18:02 20707930 34327726
-##  4   11164502 2138-10-18 19:37:45 28068235 30026588
-##  5   18080257 2192-09-25 16:44:25 28833098 31511726
-##  6   13674030 2149-09-03 16:47:42 25724380 37401146
-##  7   16608854 2179-03-28 11:58:43 23258166 30850704
-##  8   10791772 2112-07-08 20:49:42 26096086 30172592
-##  9   11372975 2160-12-30 15:22:39 25307264 39755617
-## 10   12214713 2147-05-25 20:42:00 27167382 32507991
-##    first_careunit                              
-##    &lt;chr&gt;                                       
-##  1 Neuro Stepdown                              
-##  2 Neuro Stepdown                              
-##  3 Surgical Intensive Care Unit (SICU)         
-##  4 Neuro Stepdown                              
-##  5 Neuro Stepdown                              
-##  6 Surgical Intensive Care Unit (SICU)         
-##  7 Neuro Stepdown                              
-##  8 Neuro Stepdown                              
-##  9 Cardiac Vascular Intensive Care Unit (CVICU)
-## 10 Neuro Stepdown                              
-##    last_careunit                                outtime               los
-##    &lt;chr&gt;                                        &lt;dttm&gt;              &lt;dbl&gt;
-##  1 Neuro Stepdown                               2115-11-15 18:06:26 2.78 
-##  2 Neuro Stepdown                               2149-01-22 18:37:29 1.92 
-##  3 Surgical Intensive Care Unit (SICU)          2130-09-15 16:49:40 2.56 
-##  4 Neuro Stepdown                               2138-10-22 21:03:17 4.06 
-##  5 Neuro Stepdown                               2192-09-29 14:40:36 3.91 
-##  6 Surgical Intensive Care Unit (SICU)          2149-09-04 12:25:54 0.818
-##  7 Neuro Stepdown                               2179-03-28 20:25:19 0.352
-##  8 Neuro Stepdown                               2112-07-16 20:52:14 8.00 
-##  9 Cardiac Vascular Intensive Care Unit (CVICU) 2161-01-01 14:47:26 1.98 
-## 10 Neuro Stepdown                               2147-05-31 21:17:47 6.02 
-##    admittime           dischtime           deathtime admission_type   
-##    &lt;dttm&gt;              &lt;dttm&gt;              &lt;dttm&gt;    &lt;chr&gt;            
-##  1 2115-11-02 18:38:00 2115-11-26 14:30:00 NA        OBSERVATION ADMIT
-##  2 2149-01-20 18:21:00 2149-02-02 14:10:00 NA        OBSERVATION ADMIT
-##  3 2130-09-09 08:57:00 2130-09-17 14:51:00 NA        EW EMER.         
-##  4 2138-10-18 19:37:00 2138-10-25 16:55:00 NA        OBSERVATION ADMIT
-##  5 2192-09-25 16:43:00 2192-09-29 14:25:00 NA        URGENT           
-##  6 2149-09-03 08:00:00 2149-09-09 17:17:00 NA        ELECTIVE         
-##  7 2179-03-28 06:35:00 2179-03-31 14:35:00 NA        OBSERVATION ADMIT
-##  8 2112-07-08 20:48:00 2112-07-18 16:32:00 NA        OBSERVATION ADMIT
-##  9 2160-12-29 13:24:00 2161-01-08 15:00:00 NA        ELECTIVE         
-## 10 2147-05-25 19:30:00 2147-06-07 15:47:00 NA        OBSERVATION ADMIT
-##    admission_location     discharge_location           insurance language
-##    &lt;chr&gt;                  &lt;chr&gt;                        &lt;chr&gt;     &lt;chr&gt;   
-##  1 TRANSFER FROM HOSPITAL CHRONIC/LONG TERM ACUTE CARE Other     ENGLISH 
-##  2 EMERGENCY ROOM         HOME                         Other     ENGLISH 
-##  3 EMERGENCY ROOM         SKILLED NURSING FACILITY     Other     ENGLISH 
-##  4 EMERGENCY ROOM         SKILLED NURSING FACILITY     Other     ENGLISH 
-##  5 TRANSFER FROM HOSPITAL REHAB                        Other     ENGLISH 
-##  6 PHYSICIAN REFERRAL     SKILLED NURSING FACILITY     Other     ENGLISH 
-##  7 EMERGENCY ROOM         HOME HEALTH CARE             Other     ENGLISH 
-##  8 EMERGENCY ROOM         SKILLED NURSING FACILITY     Other     ENGLISH 
-##  9 PHYSICIAN REFERRAL     HOME HEALTH CARE             Medicare  ENGLISH 
-## 10 EMERGENCY ROOM         SKILLED NURSING FACILITY     Other     ?       
-##    marital_status ethnicity              edregtime           edouttime          
-##    &lt;chr&gt;          &lt;chr&gt;                  &lt;dttm&gt;              &lt;dttm&gt;             
-##  1 DIVORCED       WHITE                  2115-11-02 13:59:00 2115-11-02 22:17:00
-##  2 SINGLE         WHITE                  2149-01-20 14:11:00 2149-01-20 20:39:00
-##  3 SINGLE         WHITE                  2130-09-09 05:34:00 2130-09-09 10:39:00
-##  4 WIDOWED        WHITE                  2138-10-18 16:08:00 2138-10-18 20:39:00
-##  5 MARRIED        WHITE                  NA                  NA                 
-##  6 DIVORCED       BLACK/AFRICAN AMERICAN NA                  NA                 
-##  7 MARRIED        WHITE                  2179-03-27 22:45:00 2179-03-28 14:44:00
-##  8 WIDOWED        WHITE                  2112-07-08 17:58:00 2112-07-08 23:19:00
-##  9 SINGLE         WHITE                  NA                  NA                 
-## 10 WIDOWED        HISPANIC/LATINO        2147-05-25 10:22:00 2147-05-25 20:42:00
-##    hospital_expire_flag gender anchor_age anchor_year anchor_year_group
-##                   &lt;int&gt; &lt;chr&gt;       &lt;int&gt;       &lt;int&gt; &lt;chr&gt;            
-##  1                    0 F              57        2115 2017 - 2019      
-##  2                    0 F              32        2149 2014 - 2016      
-##  3                    0 M              53        2130 2008 - 2010      
-##  4                    0 F              68        2135 2014 - 2016      
-##  5                    0 M              65        2185 2008 - 2010      
-##  6                    0 F              78        2146 2011 - 2013      
-##  7                    0 F              45        2179 2017 - 2019      
-##  8                    0 F              84        2112 2017 - 2019      
-##  9                    0 F              73        2160 2008 - 2010      
-## 10                    0 F              84        2147 2017 - 2019      
-##    dod        le50931 le50983 le50912 le50902 le50893 le50960 le50882 le51301
-##    &lt;date&gt;       &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1 2115-12-11     135     138     0.4      98     9.2     1.6      26     9.2
-##  2 2150-03-10     112     137     0.5     104     9.1     1.9      23    16.9
-##  3 2138-09-22     219     136     0.8      99     8.5     1.8      25    12.7
-##  4 2138-11-30      89     137     0.4      97     8.1     1.7      26     7.1
-##  5 2193-08-26     111     142     0.8      98     9.5     2.1      30     7.2
-##  6 2151-07-11     125     145     0.8     109     8.8     1.7      22     9  
-##  7 2179-05-26      97     141     1       107     8.9     2.2      24     6.8
-##  8 2112-12-04     163     145     0.7     106     8.8     2.2      23     7.2
-##  9 2171-12-10     149     138     0.5     112     8.2     2.7      26    13.1
-## 10 2147-07-16     163     139     1        99    10.5     1.6      23    10.4
-##    le50971 le51221 le220210 le220181 le223761 le220045 le220179 age_hadm
-##      &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;int&gt;
-##  1     4.3    31.5       23       97     98.6       96      132       57
-##  2     4.5    34.4       14       74     97.9       85       96       32
-##  3     5.2    35.1       17       91    100.        85      138       53
-##  4     3.1    35.6       13      100     99.1       97      130       71
-##  5     3.7    31.5       20       92     98.1       83      120       72
-##  6     3.7    36.3       19       98     97.6       89      140       81
-##  7     4.5    38.3       19       78     97.9       74      122       45
-##  8     3.6    40.2       20       86     98.3       83      149       84
-##  9     3.8    24.6       20       57     97.2       80       94       73
-## 10     4.9    41.2       27      111     98         95      149       84
-##    admit_to_death thirty_day_mort
-##             &lt;int&gt;           &lt;dbl&gt;
-##  1             39               0
-##  2            414               0
-##  3           2935               0
-##  4             43               0
-##  5            335               0
-##  6            676               0
-##  7             59               0
-##  8            149               0
-##  9           3998               0
-## 10             52               0
-## # … with 7,907 more rows</code></pre>
-<p>Now we have 7917 observations and 44 variables. Also, it is important to note that the appropriate way of summarizing variables (and, later, of modeling their missingness) would vary for numeric versus categorical variables, so I would explore them separately. Let’s first look at the categorical variables, exploring their distribution by the outcome of interest.</p>
-<pre class="r"><code>library(&quot;SmartEDA&quot;)</code></pre>
-<pre><code>## Registered S3 method overwritten by &#39;GGally&#39;:
-##   method from   
-##   +.gg   ggplot2</code></pre>
-<pre class="r"><code>catvars &lt;- c(&quot;thirty_day_mort&quot;,
+<pre><code>## # A tibble: 50,048 × 29
+##    first_careunit                                  admittime          
+##    &lt;chr&gt;                                           &lt;dttm&gt;             
+##  1 Medical Intensive Care Unit (MICU)              2180-07-23 05:35:00
+##  2 Medical Intensive Care Unit (MICU)              2189-06-27 00:38:00
+##  3 Cardiac Vascular Intensive Care Unit (CVICU)    2160-05-18 00:45:00
+##  4 Medical Intensive Care Unit (MICU)              2156-04-12 07:16:00
+##  5 Coronary Care Unit (CCU)                        2183-10-17 16:20:00
+##  6 Cardiac Vascular Intensive Care Unit (CVICU)    2141-04-20 00:15:00
+##  7 PACU                                            2137-02-24 02:00:00
+##  8 Coronary Care Unit (CCU)                        2196-02-24 06:38:00
+##  9 Cardiac Vascular Intensive Care Unit (CVICU)    2111-01-15 06:55:00
+## 10 Neuro Surgical Intensive Care Unit (Neuro SICU) 2159-02-20 05:43:00
+##    admission_type              admission_location                     insurance
+##    &lt;chr&gt;                       &lt;chr&gt;                                  &lt;chr&gt;    
+##  1 EW EMER.                    EMERGENCY ROOM                         Medicaid 
+##  2 EW EMER.                    EMERGENCY ROOM                         Medicare 
+##  3 SURGICAL SAME DAY ADMISSION PHYSICIAN REFERRAL                     Medicare 
+##  4 EW EMER.                    EMERGENCY ROOM                         Medicare 
+##  5 EW EMER.                    TRANSFER FROM HOSPITAL                 Other    
+##  6 SURGICAL SAME DAY ADMISSION PHYSICIAN REFERRAL                     Other    
+##  7 URGENT                      TRANSFER FROM SKILLED NURSING FACILITY Medicare 
+##  8 URGENT                      TRANSFER FROM HOSPITAL                 Medicaid 
+##  9 EW EMER.                    PROCEDURE SITE                         Medicare 
+## 10 OBSERVATION ADMIT           EMERGENCY ROOM                         Other    
+##    language marital_status ethnicity              gender anchor_age heart_rate
+##    &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;                  &lt;chr&gt;       &lt;int&gt;      &lt;dbl&gt;
+##  1 ENGLISH  WIDOWED        WHITE                  F              52         91
+##  2 ENGLISH  MARRIED        BLACK/AFRICAN AMERICAN F              73         77
+##  3 ENGLISH  SINGLE         OTHER                  F              53         80
+##  4 ENGLISH  WIDOWED        WHITE                  F              80        124
+##  5 ENGLISH  SINGLE         WHITE                  M              53         81
+##  6 ENGLISH  &lt;NA&gt;           UNABLE TO OBTAIN       M              56         97
+##  7 ENGLISH  MARRIED        BLACK/AFRICAN AMERICAN F              72        113
+##  8 ENGLISH  SINGLE         BLACK/AFRICAN AMERICAN M              47        144
+##  9 ENGLISH  WIDOWED        WHITE                  M              78         80
+## 10 ENGLISH  WIDOWED        WHITE                  F              64        107
+##    non_invasive_blood_pressure_systolic non_invasive_blood_pressure_mean
+##                                   &lt;dbl&gt;                            &lt;dbl&gt;
+##  1                                   84                               56
+##  2                                  150                               92
+##  3                                  104                               77
+##  4                                   87                               53
+##  5                                  136                               99
+##  6                                  102                               69
+##  7                                   58                               27
+##  8                                   99                               74
+##  9                                  119                               85
+## 10                                  169                              102
+##    respiratory_rate temperature_fahrenheit arterial_blood_pressure_systolic
+##               &lt;dbl&gt;                  &lt;dbl&gt;                            &lt;dbl&gt;
+##  1               24                   98.7                               NA
+##  2               23                   98                                 NA
+##  3               14                   97.2                              134
+##  4               25                  103.                                NA
+##  5               23                   96.7                               NA
+##  6               16                   97.5                               96
+##  7               15                   95.6                              104
+##  8               25                   98.5                              123
+##  9               12                   98.4                              105
+## 10               15                   99.6                              147
+##    arterial_blood_pressure_mean bicarbonate calcium chloride creatinine glucose
+##                           &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt;
+##  1                           NA          21     9.3      102        0.5     115
+##  2                           NA          23     9.2      103        2.2     144
+##  3                           94          23    NA        109        1.1      98
+##  4                           NA          20     7.4       98        0.8      99
+##  5                           NA          20     7.6      101        0.8     226
+##  6                           72          25    NA        116        0.9      99
+##  7                           77          15     7.6      112        0.6     137
+##  8                           93          14     6.8       96        7.9     425
+##  9                           70          24     7.9      110        0.7     144
+## 10                           76          20     9.6       98        0.9     135
+##    magnesium potassium sodium hematocrit   wbc lactate mort30
+##        &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;int&gt;
+##  1       2.3       4.7    132       34.8   4.1    NA        0
+##  2       2         4.2    139       30.8   5.4    NA        0
+##  3       2.1       4      140       28.6  18.2     3.3      0
+##  4       1.4       3.9    129       28.7  22.4     1.6      0
+##  5       1.6       5.2    133       43.4  20.7     1.7      0
+##  6       2.2       5      142       28    16       3.1      0
+##  7       1.5       4.4    139       22.1   4.3     6.8      0
+##  8       2.3       4.3    132       36.2  21.6     3.1      0
+##  9       2.8       4.3    140       23.2  11.3     2.8      0
+## 10       1.7       4      138       37.3  14.1     1        0
+## # … with 50,038 more rows</code></pre>
+<pre class="r"><code>rmcatg &lt;- c(&quot;mort30&quot;,
              &quot;first_careunit&quot;,
              &quot;admission_type&quot;,
              &quot;admission_location&quot;,
@@ -372,356 +337,301 @@ print(data, width = Inf)</code></pre>
              &quot;marital_status&quot;,
              &quot;ethnicity&quot;,
              &quot;gender&quot;)
-# Create table for categorical variables
 data %&gt;%
-  select(all_of(catvars)) %&gt;%
-  ExpCTable(Target = &quot;thirty_day_mort&quot;,
+  select(all_of(rmcatg)) %&gt;%
+  ExpCTable(Target = &quot;mort30&quot;,
             margin=1, clim=10, nlim=3,
             round=2, bin=NULL, per=FALSE)</code></pre>
-<pre><code>##              VARIABLE                                         CATEGORY
-## 1      first_careunit     Cardiac Vascular Intensive Care Unit (CVICU)
-## 2      first_careunit                         Coronary Care Unit (CCU)
-## 3      first_careunit               Medical Intensive Care Unit (MICU)
-## 4      first_careunit Medical/Surgical Intensive Care Unit (MICU/SICU)
-## 5      first_careunit                               Neuro Intermediate
-## 6      first_careunit                                   Neuro Stepdown
-## 7      first_careunit  Neuro Surgical Intensive Care Unit (Neuro SICU)
-## 8      first_careunit              Surgical Intensive Care Unit (SICU)
-## 9      first_careunit                              Trauma SICU (TSICU)
-## 10     first_careunit                                            TOTAL
-## 11     admission_type                           AMBULATORY OBSERVATION
-## 12     admission_type                                     DIRECT EMER.
-## 13     admission_type                               DIRECT OBSERVATION
-## 14     admission_type                                         ELECTIVE
-## 15     admission_type                                   EU OBSERVATION
-## 16     admission_type                                         EW EMER.
-## 17     admission_type                                OBSERVATION ADMIT
-## 18     admission_type                      SURGICAL SAME DAY ADMISSION
-## 19     admission_type                                           URGENT
-## 20     admission_type                                            TOTAL
-## 21 admission_location                      AMBULATORY SURGERY TRANSFER
-## 22 admission_location                                  CLINIC REFERRAL
-## 23 admission_location                                   EMERGENCY ROOM
-## 24 admission_location                        INFORMATION NOT AVAILABLE
-## 25 admission_location                                             PACU
-## 26 admission_location                               PHYSICIAN REFERRAL
-## 27 admission_location                                   PROCEDURE SITE
-## 28 admission_location                           TRANSFER FROM HOSPITAL
-## 29 admission_location           TRANSFER FROM SKILLED NURSING FACILITY
-## 30 admission_location                            WALK-IN/SELF REFERRAL
-## 31 admission_location                                            TOTAL
-## 32          insurance                                         Medicaid
-## 33          insurance                                         Medicare
-## 34          insurance                                            Other
-## 35          insurance                                            TOTAL
-## 36           language                                                ?
-## 37           language                                          ENGLISH
-## 38           language                                            TOTAL
-## 39     marital_status                                         DIVORCED
-## 40     marital_status                                          MARRIED
-## 41     marital_status                                               NA
-## 42     marital_status                                           SINGLE
-## 43     marital_status                                          WIDOWED
-## 44     marital_status                                            TOTAL
-## 45          ethnicity                    AMERICAN INDIAN/ALASKA NATIVE
-## 46          ethnicity                                            ASIAN
-## 47          ethnicity                           BLACK/AFRICAN AMERICAN
-## 48          ethnicity                                  HISPANIC/LATINO
-## 49          ethnicity                                            OTHER
-## 50          ethnicity                                 UNABLE TO OBTAIN
-## 51          ethnicity                                          UNKNOWN
-## 52          ethnicity                                            WHITE
-## 53          ethnicity                                            TOTAL
-## 54             gender                                                F
-## 55             gender                                                M
-## 56             gender                                            TOTAL
-## 57    thirty_day_mort                                                0
-## 58    thirty_day_mort                                                1
-## 59    thirty_day_mort                                            TOTAL
-##    thirty_day_mort:0 thirty_day_mort:1 TOTAL
-## 1                270               269   539
-## 2                333               745  1078
-## 3                631              1443  2074
-## 4                631              1109  1740
-## 5                 16                31    47
-## 6                 15                15    30
-## 7                 30               229   259
-## 8                359               909  1268
-## 9                197               685   882
-## 10              2482              5435  7917
-## 11                 1                 0     1
-## 12               167               154   321
-## 13                 4                14    18
-## 14                93                40   133
-## 15                 1                32    33
-## 16              1437              3329  4766
-## 17               201               566   767
-## 18               180                80   260
-## 19               398              1220  1618
-## 20              2482              5435  7917
-## 21                 0                 3     3
-## 22                68                73   141
-## 23              1383              3024  4407
-## 24                 5                26    31
-## 25                15                13    28
-## 26               472               501   973
-## 27                40                33    73
-## 28               444              1579  2023
-## 29                27                89   116
-## 30                28                94   122
-## 31              2482              5435  7917
-## 32               188               310   498
-## 33              1297              2886  4183
-## 34               997              2239  3236
-## 35              2482              5435  7917
-## 36               337               585   922
-## 37              2145              4850  6995
-## 38              2482              5435  7917
-## 39               178               311   489
-## 40              1203              2130  3333
-## 41                73              1047  1120
-## 42               666              1055  1721
-## 43               362               892  1254
-## 44              2482              5435  7917
-## 45                 9                 8    17
-## 46               109               172   281
-## 47               341               402   743
-## 48               103               120   223
-## 49               106               216   322
-## 50                18               123   141
-## 51               106              1157  1263
-## 52              1690              3237  4927
-## 53              2482              5435  7917
-## 54              1110              2506  3616
-## 55              1372              2929  4301
-## 56              2482              5435  7917
-## 57              2482                 0  2482
-## 58                 0              5435  5435
-## 59              2482              5435  7917</code></pre>
+<pre><code>##          VARIABLE                      CATEGORY mort30:0 mort30:1 TOTAL
+## 1  admission_type        AMBULATORY OBSERVATION       18        0    18
+## 2  admission_type                  DIRECT EMER.     1597      157  1754
+## 3  admission_type            DIRECT OBSERVATION       96       13   109
+## 4  admission_type                      ELECTIVE     1875       37  1912
+## 5  admission_type                EU OBSERVATION      243       29   272
+## 6  admission_type                      EW EMER.    22886     3047 25933
+## 7  admission_type             OBSERVATION ADMIT     4678      475  5153
+## 8  admission_type   SURGICAL SAME DAY ADMISSION     5444       69  5513
+## 9  admission_type                        URGENT     8236     1148  9384
+## 10 admission_type                         TOTAL    45073     4975 50048
+## 11      insurance                      Medicaid     3382      297  3679
+## 12      insurance                      Medicare    18925     2644 21569
+## 13      insurance                         Other    22766     2034 24800
+## 14      insurance                         TOTAL    45073     4975 50048
+## 15       language                             ?     4440      543  4983
+## 16       language                       ENGLISH    40633     4432 45065
+## 17       language                         TOTAL    45073     4975 50048
+## 18 marital_status                      DIVORCED     3204      289  3493
+## 19 marital_status                       MARRIED    20785     1960 22745
+## 20 marital_status                            NA     3224      952  4176
+## 21 marital_status                        SINGLE    12468      970 13438
+## 22 marital_status                       WIDOWED     5392      804  6196
+## 23 marital_status                         TOTAL    45073     4975 50048
+## 24      ethnicity AMERICAN INDIAN/ALASKA NATIVE       81        6    87
+## 25      ethnicity                         ASIAN     1296      151  1447
+## 26      ethnicity        BLACK/AFRICAN AMERICAN     4211      364  4575
+## 27      ethnicity               HISPANIC/LATINO     1627      112  1739
+## 28      ethnicity                         OTHER     2175      205  2380
+## 29      ethnicity              UNABLE TO OBTAIN      634      124   758
+## 30      ethnicity                       UNKNOWN     4287     1050  5337
+## 31      ethnicity                         WHITE    30762     2963 33725
+## 32      ethnicity                         TOTAL    45073     4975 50048
+## 33         gender                             F    19734     2298 22032
+## 34         gender                             M    25339     2677 28016
+## 35         gender                         TOTAL    45073     4975 50048
+## 36         mort30                             0    45073        0 45073
+## 37         mort30                             1        0     4975  4975
+## 38         mort30                         TOTAL    45073     4975 50048</code></pre>
 <pre class="r"><code>numvars &lt;- data %&gt;%
-  select(-any_of(catvars)) %&gt;%
+  select(-any_of(rmcatg)) %&gt;%
   names()
 data %&gt;% 
-  select(all_of(numvars), &quot;thirty_day_mort&quot;) %&gt;%
-  ExpNumStat(by = &quot;G&quot;, gp = &quot;thirty_day_mort&quot;,
+  select(all_of(numvars), &quot;mort30&quot;) %&gt;%
+  ExpNumStat(by = &quot;G&quot;, gp = &quot;mort30&quot;,
              Qnt = seq(0,1,0.25),
              MesofShape = 1,
              Outlier = TRUE,
              round = 2)</code></pre>
-<pre><code>##             Vname             Group   TN nNeg nZero nPos NegInf PosInf NA_Value
-## 23 admit_to_death thirty_day_mort:0 2482    0     0 2482      0      0        0
-## 46 admit_to_death thirty_day_mort:1 5435    0   355 5080      0      0        0
-## 22       age_hadm thirty_day_mort:0 2482    0     0 2482      0      0        0
-## 45       age_hadm thirty_day_mort:1 5435    0     0 5435      0      0        0
-## 5      anchor_age thirty_day_mort:0 2482    0     0 2482      0      0        0
-## 28     anchor_age thirty_day_mort:1 5435    0     0 5435      0      0        0
-## 6     anchor_year thirty_day_mort:0 2482    0     0 2482      0      0        0
-## 29    anchor_year thirty_day_mort:1 5435    0     0 5435      0      0        0
-## 2         hadm_id thirty_day_mort:0 2482    0     0 2482      0      0        0
-## 25        hadm_id thirty_day_mort:1 5435    0     0 5435      0      0        0
-## 20       le220045 thirty_day_mort:0 2482    0     0 2482      0      0        0
-## 43       le220045 thirty_day_mort:1 5435    0     6 5429      0      0        0
-## 21       le220179 thirty_day_mort:0 2482    0     0 2480      0      0        2
-## 44       le220179 thirty_day_mort:1 5435    0     0 5186      0      0      249
-## 18       le220181 thirty_day_mort:0 2482    0     0 2480      0      0        2
-## 41       le220181 thirty_day_mort:1 5435    0     0 5188      0      0      247
-## 17       le220210 thirty_day_mort:0 2482    0     4 2478      0      0        0
-## 40       le220210 thirty_day_mort:1 5435    0    15 5414      0      0        6
-## 19       le223761 thirty_day_mort:0 2482    0     1 2479      0      0        2
-## 42       le223761 thirty_day_mort:1 5435    0     3 4966      0      0      466
-## 13        le50882 thirty_day_mort:0 2482    0     0 2480      0      0        2
-## 36        le50882 thirty_day_mort:1 5435    0     0 5023      0      0      412
-## 11        le50893 thirty_day_mort:0 2482    0     0 2481      0      0        1
-## 34        le50893 thirty_day_mort:1 5435    0     0 5003      0      0      432
-## 10        le50902 thirty_day_mort:0 2482    0     0 2481      0      0        1
-## 33        le50902 thirty_day_mort:1 5435    0     0 5030      0      0      405
-## 9         le50912 thirty_day_mort:0 2482    0     0 2480      0      0        2
-## 32        le50912 thirty_day_mort:1 5435    0     0 5023      0      0      412
-## 7         le50931 thirty_day_mort:0 2482    0     0 2481      0      0        1
-## 30        le50931 thirty_day_mort:1 5435    0     0 5021      0      0      414
-## 12        le50960 thirty_day_mort:0 2482    0     0 2481      0      0        1
-## 35        le50960 thirty_day_mort:1 5435    0     0 5006      0      0      429
-## 15        le50971 thirty_day_mort:0 2482    0     0 2479      0      0        3
-## 38        le50971 thirty_day_mort:1 5435    0     0 5029      0      0      406
-## 8         le50983 thirty_day_mort:0 2482    0     0 2481      0      0        1
-## 31        le50983 thirty_day_mort:1 5435    0     0 5033      0      0      402
-## 16        le51221 thirty_day_mort:0 2482    0     0 2473      0      0        9
-## 39        le51221 thirty_day_mort:1 5435    0     0 4997      0      0      438
-## 14        le51301 thirty_day_mort:0 2482    0     1 2470      0      0       11
-## 37        le51301 thirty_day_mort:1 5435    0     0 4994      0      0      441
-## 4             los thirty_day_mort:0 2482    0     0 2482      0      0        0
-## 27            los thirty_day_mort:1 5435    0     0 5435      0      0        0
-## 3         stay_id thirty_day_mort:0 2482    0     0 2482      0      0        0
-## 26        stay_id thirty_day_mort:1 5435    0     0 5435      0      0        0
-## 1      subject_id thirty_day_mort:0 2482    0     0 2482      0      0        0
-## 24     subject_id thirty_day_mort:1 5435    0     0 5435      0      0        0
-##    Per_of_Missing          sum         min         max        mean      median
-## 23           0.00 1.705941e+06       31.00     4275.00      687.33      290.00
-## 46           0.00 4.111900e+04        0.00       30.00        7.57        5.00
-## 22           0.00 1.692070e+05       19.00       99.00       68.17       69.00
-## 45           0.00 3.873510e+05       19.00      100.00       71.27       74.00
-## 5            0.00 1.659290e+05       19.00       91.00       66.85       68.00
-## 28           0.00 3.822050e+05       19.00       91.00       70.32       73.00
-## 6            0.00 5.341970e+06     2110.00     2205.00     2152.28     2152.00
-## 29           0.00 1.168982e+07     2110.00     2206.00     2150.84     2151.00
-## 2            0.00 6.206250e+10 20005479.00 29994261.00 25005035.18 25024430.00
-## 25           0.00 1.358584e+11 20000094.00 29999098.00 24996936.74 25021866.00
-## 20           0.00 2.237090e+05       32.00      196.00       90.13       88.00
-## 43           0.00 5.061000e+05        0.00      182.00       93.12       92.00
-## 21           0.08 3.043330e+05       50.00      240.00      122.71      121.00
-## 44           4.58 6.317470e+05        9.00    12262.00      121.82      117.00
-## 18           0.08 1.999490e+05        8.00      204.00       80.62       79.00
-## 41           4.54 5.574950e+05       19.00   140119.00      107.46       78.00
-## 17           0.00 4.860300e+04        0.00       63.00       19.58       19.00
-## 40           0.11 1.143530e+05        0.00      115.00       21.06       20.00
-## 19           0.08 2.431443e+05        0.00      106.00       98.04       98.10
-## 42           8.57 4.842545e+05        0.00      105.80       97.46       98.00
-## 13           0.08 5.767300e+04        6.00       42.00       23.26       23.00
-## 36           7.58 1.053176e+05        2.00       50.00       20.97       21.00
-## 11           0.04 2.070590e+04        3.70       19.50        8.35        8.30
-## 34           7.95 4.115400e+04        1.60       43.00        8.23        8.20
-## 10           0.04 2.565270e+05       67.00      139.00      103.40      104.00
-## 33           7.45 5.194030e+05       61.00      140.00      103.26      104.00
-## 9            0.08 4.326500e+03        0.10       33.10        1.74        1.10
-## 32           7.58 8.852300e+03        0.10       23.10        1.76        1.30
-## 7            0.04 3.563260e+05       29.00     1260.00      143.62      125.00
-## 30           7.62 8.224480e+05        7.00     1429.00      163.80      139.00
-## 12           0.04 4.936400e+03        0.70        5.80        1.99        1.90
-## 35           7.89 1.015750e+04        0.50        8.70        2.03        2.00
-## 15           0.12 1.045060e+04        1.90        9.50        4.22        4.10
-## 38           7.47 2.178766e+04        1.40        9.60        4.33        4.20
-## 8            0.04 3.417680e+05      103.00      170.00      137.75      138.00
-## 31           7.40 6.961450e+05       97.00      176.00      138.32      139.00
-## 16           0.36 7.573000e+04       11.10       58.60       30.62       30.20
-## 39           8.06 1.624469e+05        4.30       62.10       32.51       32.10
-## 14           0.44 2.999280e+04        0.00      339.70       12.14        9.80
-## 37           8.11 7.525071e+04        0.10      471.70       15.07       12.60
-## 4            0.00 1.302624e+04        0.01       77.74        5.25        2.21
-## 27           0.00 2.290904e+04        0.01       30.82        4.22        2.47
-## 3            0.00 8.681030e+10 30002498.00 39999286.00 34975948.21 35002963.00
-## 26           0.00 1.901836e+11 30000646.00 39998012.00 34992379.46 35012869.00
-## 1            0.00 3.713135e+10 10002155.00 19995127.00 14960255.27 14904879.00
-## 24           0.00 8.166628e+10 10001884.00 19999840.00 15025994.89 15100941.00
-##            SD    CV        IQR          0%         25%         50%         75%
-## 23     848.58  1.23     949.75       31.00       76.00      290.00     1025.75
-## 46       7.12  0.94       9.00        0.00        2.00        5.00       11.00
-## 22      14.26  0.21      20.00       19.00       59.00       69.00       79.00
-## 45      15.57  0.22      23.00       19.00       61.00       74.00       84.00
-## 5       14.17  0.21      19.00       19.00       58.00       68.00       77.00
-## 28      15.49  0.22      22.00       19.00       61.00       73.00       83.00
-## 6       23.83  0.01      41.00     2110.00     2132.00     2152.00     2173.00
-## 29      23.35  0.01      40.00     2110.00     2131.00     2151.00     2171.00
-## 2  2881647.47  0.12 4973896.50 20005479.00 22537428.25 25024430.00 27511324.75
-## 25 2872212.02  0.11 4909684.00 20000094.00 22556138.50 25021866.00 27465822.50
-## 20      20.73  0.23      27.00       32.00       76.00       88.00      103.00
-## 43      22.31  0.24      31.00        0.00       77.00       92.00      108.00
-## 21      25.36  0.21      34.00       50.00      105.00      121.00      139.00
-## 44     170.84  1.40      36.00        9.00      101.00      117.00      137.00
-## 18      18.47  0.23      23.00        8.00       68.00       79.00       91.00
-## 41    1944.38 18.09      27.00       19.00       66.00       78.00       93.00
-## 17       6.03  0.31       8.00        0.00       15.00       19.00       23.00
-## 40       6.79  0.32       9.00        0.00       16.00       20.00       25.00
-## 19       2.72  0.03       1.20        0.00       97.50       98.10       98.70
-## 42       5.97  0.06       1.30        0.00       97.40       98.00       98.70
-## 13       4.88  0.21       6.00        6.00       20.00       23.00       26.00
-## 36       5.83  0.28       8.00        2.00       17.00       21.00       25.00
-## 11       0.94  0.11       1.00        3.70        7.80        8.30        8.80
-## 34       1.22  0.15       1.20        1.60        7.60        8.20        8.80
-## 10       6.83  0.07       9.00       67.00       99.00      104.00      108.00
-## 33       7.80  0.08       9.00       61.00       99.00      104.00      108.00
-## 9        1.93  1.11       1.00        0.10        0.80        1.10        1.80
-## 32       1.53  0.87       1.30        0.10        0.80        1.30        2.10
-## 7       76.43  0.53      60.00       29.00      102.00      125.00      162.00
-## 30      96.98  0.59      81.00        7.00      107.00      139.00      188.00
-## 12       0.44  0.22       0.50        0.70        1.70        1.90        2.20
-## 35       0.47  0.23       0.50        0.50        1.70        2.00        2.20
-## 15       0.76  0.18       0.90        1.90        3.70        4.10        4.60
-## 38       0.90  0.21       1.10        1.40        3.70        4.20        4.80
-## 8        5.51  0.04       6.00      103.00      135.00      138.00      141.00
-## 31       6.56  0.05       7.00       97.00      135.00      139.00      142.00
-## 16       6.47  0.21       9.10       11.10       25.70       30.20       34.80
-## 39       7.19  0.22       9.80        4.30       27.40       32.10       37.20
-## 14      14.80  1.22       7.55        0.00        6.80        9.80       14.35
-## 37      15.79  1.05       9.60        0.10        8.50       12.60       18.10
-## 4        8.67  1.65       3.73        0.01        1.18        2.21        4.91
-## 27       4.68  1.11       4.43        0.01        1.05        2.47        5.48
-## 3  2907531.84  0.08 5030804.25 30002498.00 32439263.25 35002963.00 37470067.50
-## 26 2907711.55  0.08 5080918.50 30000646.00 32465679.00 35012869.00 37546597.50
-## 1  2877377.88  0.19 4867921.75 10002155.00 12563515.50 14904879.00 17431437.25
-## 24 2900866.22  0.19 5069495.00 10001884.00 12490895.00 15100941.00 17560390.00
-##           100%      LB.25%      UB.75% nOutliers
-## 23     4275.00    -1348.62     2450.38       142
-## 46       30.00      -11.50       24.50       191
-## 22       99.00       29.00      109.00        27
-## 45      100.00       26.50      118.50        61
-## 5        91.00       29.50      105.50        35
-## 28       91.00       28.00      116.00        71
-## 6      2205.00     2070.50     2234.50         0
-## 29     2206.00     2071.00     2231.00         0
-## 2  29994261.00 15076583.50 34972169.50         0
-## 25 29999098.00 15191612.50 34830348.50         0
-## 20      196.00       35.50      143.50        35
-## 43      182.00       30.50      154.50        44
-## 21      240.00       54.00      190.00        26
-## 44    12262.00       47.00      191.00        67
-## 18      204.00       33.50      125.50        50
-## 41   140119.00       25.50      133.50        91
-## 17       63.00        3.00       35.00        38
-## 40      115.00        2.50       38.50       101
-## 19      106.00       95.70      100.50       203
-## 42      105.80       95.45      100.65       465
-## 13       42.00       11.00       35.00        57
-## 36       50.00        5.00       37.00        44
-## 11       19.50        6.30       10.30        71
-## 34       43.00        5.80       10.60       162
-## 10      139.00       85.50      121.50        36
-## 33      140.00       85.50      121.50       151
-## 9        33.10       -0.70        3.30       284
-## 32       23.10       -1.15        4.05       368
-## 7      1260.00       12.00      252.00       144
-## 30     1429.00      -14.50      309.50       328
-## 12        5.80        0.95        2.95        90
-## 35        8.70        0.95        2.95       194
-## 15        9.50        2.35        5.95        68
-## 38        9.60        2.05        6.45       137
-## 8       170.00      126.00      150.00        87
-## 31      176.00      124.50      152.50       209
-## 16       58.60       12.05       48.45        16
-## 39       62.10       12.70       51.90        40
-## 14      339.70       -4.53       25.68       108
-## 37      471.70       -5.90       32.50       236
-## 4        77.74       -4.42       10.50       291
-## 27       30.82       -5.58       12.12       417
-## 3  39999286.00 24893056.88 45016273.88         0
-## 26 39998012.00 24844301.25 45167975.25         0
-## 1  19995127.00  5261632.88 24733319.88         0
-## 24 19999840.00  4886652.50 25164632.50         0</code></pre>
-<p>data &lt;- data %&gt;% mutate(speaks_english = ifelse(language==“ENGLISH”, 1, 0), # Recode as NA in ethnicity ethnicity = case_when( ethnicity==“UNABLE TO OBTAIN” ~ “NOT REGISTERED”, ethnicity==“UNKNOWN” ~ “NOT REGISTERED”, TRUE ~ ethnicity ), # Indicator for having arterial bp bp_recorded = case_when( is.na(Noninvasive blood pressure mean) ~ 0L, is.na(arterial_blood_pressure_systolic) ~ 0L, TRUE ~ 1L ), # Indicator for lactate lactate_recorded = ifelse(is.na(lactate), 0, 1), # Transform admittime # To have some seasonality information # First, time of the day (am vs pm) is_am = lubridate::am(admittime) %&gt;% as.numeric(), # Epidemiological week epi_week = lubridate::epiweek(admittime), # Epidemiological year epi_year = lubridate::epiyear(admittime))</p>
-<pre><code># Remove variables already used
-data &lt;- 
-  data %&gt;% 
-  select(-c(&quot;Noninvasive blood pressure mean&quot;,
-           &quot;Noninvasive blood pressure systolic&quot;,
+<pre><code>##                                   Vname    Group    TN nNeg nZero  nPos NegInf
+## 1                            anchor_age mort30:0 45073    0     0 45073      0
+## 20                           anchor_age mort30:1  4975    0     0  4975      0
+## 8          arterial_blood_pressure_mean mort30:0 45073  208   133 18246      0
+## 27         arterial_blood_pressure_mean mort30:1  4975  119    47  2398      0
+## 7      arterial_blood_pressure_systolic mort30:0 45073    2     5 18487      0
+## 26     arterial_blood_pressure_systolic mort30:1  4975    1     1  2533      0
+## 9                           bicarbonate mort30:0 45073    0     0 44607      0
+## 28                          bicarbonate mort30:1  4975    0     0  4580      0
+## 10                              calcium mort30:0 45073    0     4 43108      0
+## 29                              calcium mort30:1  4975    0     0  4562      0
+## 11                             chloride mort30:0 45073    0     0 44627      0
+## 30                             chloride mort30:1  4975    0     0  4586      0
+## 12                           creatinine mort30:0 45073    0     3 44627      0
+## 31                           creatinine mort30:1  4975    0     0  4579      0
+## 13                              glucose mort30:0 45073    0     0 44620      0
+## 32                              glucose mort30:1  4975    0     0  4578      0
+## 2                            heart_rate mort30:0 45073    0     6 45063      0
+## 21                           heart_rate mort30:1  4975    0     3  4968      0
+## 17                           hematocrit mort30:0 45073    0     0 44472      0
+## 36                           hematocrit mort30:1  4975    0     0  4560      0
+## 19                              lactate mort30:0 45073    0     0 26192      0
+## 38                              lactate mort30:1  4975    0     0  4013      0
+## 14                            magnesium mort30:0 45073    0     1 44465      0
+## 33                            magnesium mort30:1  4975    0     0  4565      0
+## 4      non_invasive_blood_pressure_mean mort30:0 45073    0     3 44715      0
+## 23     non_invasive_blood_pressure_mean mort30:1  4975    0     0  4737      0
+## 3  non_invasive_blood_pressure_systolic mort30:0 45073    0     2 44738      0
+## 22 non_invasive_blood_pressure_systolic mort30:1  4975    0     0  4736      0
+## 15                            potassium mort30:0 45073    0     0 44610      0
+## 34                            potassium mort30:1  4975    0     0  4586      0
+## 5                      respiratory_rate mort30:0 45073    0   122 44922      0
+## 24                     respiratory_rate mort30:1  4975    0    12  4958      0
+## 16                               sodium mort30:0 45073    0     0 44634      0
+## 35                               sodium mort30:1  4975    0     0  4588      0
+## 6                temperature_fahrenheit mort30:0 45073    0    16 44659      0
+## 25               temperature_fahrenheit mort30:1  4975    0     2  4544      0
+## 18                                  wbc mort30:0 45073    0     0 44458      0
+## 37                                  wbc mort30:1  4975    0     1  4557      0
+##    PosInf NA_Value Per_of_Missing        sum    min      max   mean median
+## 1       0        0           0.00 2830773.00   18.0     91.0  62.80   64.0
+## 20      0        0           0.00  349620.00   18.0     91.0  70.28   73.0
+## 8       0    26486          58.76 1522491.00 -135.0    361.0  81.91   81.0
+## 27      0     2411          48.46  194374.00  -39.0    361.0  75.81   75.0
+## 7       0    26579          58.97 2273617.00   -6.0    357.0 122.94  120.0
+## 26      0     2440          49.05  297656.00  -10.0    703.0 117.42  114.0
+## 9       0      466           1.03 1038700.80    3.0     49.0  23.29   23.0
+## 28      0      395           7.94   95884.90    2.0     48.0  20.94   21.0
+## 10      0     1961           4.35  360567.80    0.0     27.5   8.36    8.4
+## 29      0      413           8.30   37452.80    1.6     43.0   8.21    8.2
+## 11      0      446           0.99 4671224.30   58.0    153.0 104.67  105.0
+## 30      0      389           7.82  474168.00   70.0    140.0 103.39  104.0
+## 12      0      443           0.98   56056.50    0.0     36.9   1.26    0.9
+## 31      0      396           7.96    8105.90    0.1     23.1   1.77    1.3
+## 13      0      453           1.01 6184700.00    8.0   2440.0 138.61  122.0
+## 32      0      397           7.98  749355.00    7.0   1429.0 163.69  139.5
+## 2       0        4           0.01 3915765.00    0.0    941.0  86.88   84.0
+## 21      0        4           0.08  464028.00    0.0    217.0  93.35   92.0
+## 17      0      601           1.33 1457733.70    6.4     68.6  32.78   32.7
+## 36      0      415           8.34  147775.30    4.3     62.1  32.41   32.0
+## 19      0    18881          41.89   54401.66    0.2     37.0   2.08    1.7
+## 38      0      962          19.34   14656.98    0.4     29.2   3.65    2.4
+## 14      0      607           1.35   88768.02    0.0     47.0   2.00    2.0
+## 33      0      410           8.24    9242.20    0.5      7.2   2.02    2.0
+## 4       0      355           0.79 3802360.00    0.0 120130.0  85.03   80.0
+## 23      0      238           4.78  519091.00   19.0 140119.0 109.58   78.0
+## 3       0      333           0.74 5546825.00    0.0    259.0 123.98  122.0
+## 22      0      239           4.80  577300.00    9.0  12262.0 121.90  117.0
+## 15      0      463           1.03  185042.60    0.8     13.0   4.15    4.1
+## 34      0      389           7.82   19818.30    1.4      9.4   4.32    4.2
+## 5       0       29           0.06  828750.00    0.0    180.0  18.40   18.0
+## 24      0        5           0.10  104926.00    0.0    115.0  21.11   20.0
+## 16      0      439           0.97 6181831.00   92.0    180.0 138.50  139.0
+## 35      0      387           7.78  634487.00   97.0    176.0 138.29  139.0
+## 6       0      398           0.88 4381946.88    0.0    106.0  98.08   98.2
+## 25      0      429           8.62  442986.35    0.0    105.8  97.45   98.0
+## 18      0      615           1.36  519264.22    0.1    572.5  11.68   10.3
+## 37      0      417           8.38   68734.81    0.0    471.7  15.08   12.6
+##         SD    CV  IQR     0%   25%   50%   75%     100% LB.25% UB.75% nOutliers
+## 1    17.31  0.28 24.0   18.0  52.0  64.0  76.0     91.0  16.00 112.00         0
+## 20   15.47  0.22 23.0   18.0  60.0  73.0  83.0     91.0  25.50 117.50        48
+## 8    32.03  0.39 22.0 -135.0  70.0  81.0  92.0    361.0  37.00 125.00      1290
+## 27   49.19  0.65 31.0  -39.0  59.0  75.0  90.0    361.0  12.50 136.50       324
+## 7    25.69  0.21 33.0   -6.0 105.0 120.0 138.0    357.0  55.50 187.50       335
+## 26   34.22  0.29 42.0  -10.0  95.0 114.0 137.0    703.0  32.00 200.00        40
+## 9     4.20  0.18  5.0    3.0  21.0  23.0  26.0     49.0  13.50  33.50      1447
+## 28    5.85  0.28  8.0    2.0  17.0  21.0  25.0     48.0   5.00  37.00        39
+## 10    0.81  0.10  0.9    0.0   7.9   8.4   8.8     27.5   6.55  10.15      1273
+## 29    1.21  0.15  1.2    1.6   7.6   8.2   8.8     43.0   5.80  10.60       152
+## 11    6.09  0.06  7.0   58.0 101.0 105.0 108.0    153.0  90.50 118.50      1326
+## 30    7.79  0.08  9.0   70.0  99.0 104.0 108.0    140.0  85.50 121.50       135
+## 12    1.43  1.14  0.5    0.0   0.7   0.9   1.2     36.9  -0.05   1.95      4654
+## 31    1.54  0.87  1.3    0.1   0.8   1.3   2.1     23.1  -1.15   4.05       334
+## 13   67.76  0.49 51.0    8.0 102.0 122.0 153.0   2440.0  25.50 229.50      2927
+## 32   95.90  0.59 81.0    7.0 107.0 139.5 188.0   1429.0 -14.50 309.50       294
+## 2    19.81  0.23 24.0    0.0  74.0  84.0  98.0    941.0  38.00 134.00       896
+## 21   22.38  0.24 31.0    0.0  77.0  92.0 108.0    217.0  30.50 154.50        40
+## 17    6.39  0.19  9.0    6.4  28.2  32.7  37.2     68.6  14.70  50.70       212
+## 36    7.18  0.22  9.8    4.3  27.3  32.0  37.1     62.1  12.60  51.80        36
+## 19    1.41  0.68  1.3    0.2   1.2   1.7   2.5     37.0  -0.75   4.45      1349
+## 38    3.35  0.92  3.0    0.4   1.5   2.4   4.5     29.2  -3.00   9.00       325
+## 14    0.49  0.25  0.5    0.0   1.7   2.0   2.2     47.0   0.95   2.95      1390
+## 33    0.45  0.22  0.5    0.5   1.7   2.0   2.2      7.2   0.95   2.95       173
+## 4   568.69  6.69 23.0    0.0  70.0  80.0  93.0 120130.0  35.50 127.50       739
+## 23 2034.83 18.57 28.0   19.0  65.0  78.0  93.0 140119.0  23.00 135.00        74
+## 3    23.94  0.19 32.0    0.0 107.0 122.0 139.0    259.0  59.00 187.00       519
+## 22  178.61  1.47 37.0    9.0 100.0 117.0 137.0  12262.0  44.50 192.50        56
+## 15    0.67  0.16  0.8    0.8   3.7   4.1   4.5     13.0   2.50   5.70      1354
+## 34    0.89  0.21  1.1    1.4   3.7   4.2   4.8      9.4   2.05   6.45       115
+## 5     6.06  0.33  7.0    0.0  14.0  18.0  21.0    180.0   3.50  31.50      1488
+## 24    6.78  0.32  9.0    0.0  16.0  20.0  25.0    115.0   2.50  38.50        86
+## 16    4.76  0.03  5.0   92.0 136.0 139.0 141.0    180.0 128.50 148.50      1746
+## 35    6.58  0.05  7.0   97.0 135.0 139.0 142.0    176.0 124.50 152.50       190
+## 6     2.99  0.03  1.1    0.0  97.6  98.2  98.7    106.0  95.95 100.35      3195
+## 25    5.98  0.06  1.3    0.0  97.4  98.0  98.7    105.8  95.45 100.65       444
+## 18    9.09  0.78  6.6    0.1   7.5  10.3  14.1    572.5  -2.40  24.00      1613
+## 37   16.07  1.07  9.6    0.0   8.5  12.6  18.1    471.7  -5.90  32.50       220</code></pre>
+<pre class="r"><code>data &lt;- data %&gt;%
+  mutate(speaks_english = ifelse(language==&quot;ENGLISH&quot;, 1, 0),
+         ethnicity =
+           case_when(
+             ethnicity==&quot;UNABLE TO OBTAIN&quot; ~ &quot;NOT REGISTERED&quot;,
+             ethnicity==&quot;UNKNOWN&quot; ~ &quot;NOT REGISTERED&quot;,
+             TRUE ~ ethnicity
+           ),
+         arterial_bp_recorded =
+           case_when(
+             is.na(arterial_blood_pressure_mean) ~ 0L,
+             is.na(arterial_blood_pressure_systolic) ~ 0L,
+             TRUE ~ 1L
+           ),
+         lactate_recorded = ifelse(is.na(lactate), 0, 1),
+         is_am = lubridate::am(admittime) %&gt;%
+           as.numeric(),
+         epi_week = lubridate::epiweek(admittime),
+         epi_year = lubridate::epiyear(admittime))
+data &lt;-  data %&gt;% 
+  select(-c(&quot;arterial_blood_pressure_mean&quot;,
+           &quot;arterial_blood_pressure_systolic&quot;,
            &quot;lactate&quot;,
            &quot;language&quot;,
            &quot;admittime&quot;))
-# Update our variable listing
-# In catvars, replace language by the recoded version
-catvars &lt;- c(catvars[-6], # remove language
+rmcatg &lt;- c(rmcatg[-6], 
              &quot;speaks_english&quot;,
              &quot;arterial_bp_recorded&quot;,
              &quot;lactate_recorded&quot;,
              &quot;is_am&quot;)
-# In numvars, drop used ones and add newly created
-# remove admittime, arterial bp, lactate
 numvars &lt;- c(numvars[-c(1,8,9,20)], 
              &quot;epi_week&quot;,&quot;epi_year&quot;)</code></pre>
-<p>We still care about some outliers, as appearing in our exploration (here and in the previous homework). I will use a somewhat common, crude but still useful measure to identify outliers, as <span class="math inline">\(\pm 3 SD\)</span>. The reason for this choice is that it is less strict than other alternatives (<span class="math inline">\(\pm 2 SD\)</span>, <span class="math inline">\(\pm 1.5\text{ IQR}\)</span>), but in the context at hand we would want to allow for some extreme values, while still caughting those that most likely come from errors of measurement.</p>
+<pre class="r"><code>z_scores &lt;- as.data.frame(
+    sapply(data %&gt;% select(all_of(numvars)),
+           function(df) (abs(df-mean(df,na.rm = TRUE))/sd(df,na.rm = TRUE))))
+for(i in numvars){
+  aux &lt;- z_scores[,i]
+  data[which(aux&gt;=3),i] &lt;- NA
+}
+data %&gt;% 
+  select(all_of(numvars)) %&gt;%
+  summary()</code></pre>
+<pre><code>##    anchor_age      heart_rate     non_invasive_blood_pressure_systolic
+##  Min.   :18.00   Min.   : 28.00   Min.   :  0.0                       
+##  1st Qu.:53.00   1st Qu.: 74.00   1st Qu.:106.0                       
+##  Median :65.00   Median : 85.00   Median :122.0                       
+##  Mean   :63.55   Mean   : 87.13   Mean   :123.5                       
+##  3rd Qu.:77.00   3rd Qu.: 99.00   3rd Qu.:139.0                       
+##  Max.   :91.00   Max.   :148.00   Max.   :259.0                       
+##                  NA&#39;s   :297      NA&#39;s   :573                         
+##  non_invasive_blood_pressure_mean respiratory_rate temperature_fahrenheit
+##  Min.   :  0                      Min.   : 1.00    Min.   : 88.00        
+##  1st Qu.: 69                      1st Qu.:15.00    1st Qu.: 97.60        
+##  Median : 80                      Median :18.00    Median : 98.10        
+##  Mean   : 82                      Mean   :18.49    Mean   : 98.17        
+##  3rd Qu.: 93                      3rd Qu.:22.00    3rd Qu.: 98.70        
+##  Max.   :936                      Max.   :37.00    Max.   :106.00        
+##  NA&#39;s   :596                      NA&#39;s   :614      NA&#39;s   :946           
+##   bicarbonate       calcium          chloride       creatinine      glucose    
+##  Min.   :10.00   Min.   : 5.800   Min.   : 86.0   Min.   :0.00   Min.   :  7   
+##  1st Qu.:21.00   1st Qu.: 7.900   1st Qu.:101.0   1st Qu.:0.70   1st Qu.:102   
+##  Median :23.00   Median : 8.400   Median :105.0   Median :0.90   Median :123   
+##  Mean   :23.07   Mean   : 8.346   Mean   :104.7   Mean   :1.14   Mean   :135   
+##  3rd Qu.:25.00   3rd Qu.: 8.800   3rd Qu.:108.0   3rd Qu.:1.20   3rd Qu.:153   
+##  Max.   :36.00   Max.   :10.900   Max.   :123.0   Max.   :5.60   Max.   :354   
+##  NA&#39;s   :1548    NA&#39;s   :2849     NA&#39;s   :1442    NA&#39;s   :1904   NA&#39;s   :1670  
+##    magnesium      potassium         sodium        hematocrit         wbc       
+##  Min.   :0.60   Min.   :2.100   Min.   :124.0   Min.   :13.40   Min.   : 0.00  
+##  1st Qu.:1.70   1st Qu.:3.700   1st Qu.:136.0   1st Qu.:28.10   1st Qu.: 7.50  
+##  Median :2.00   Median :4.100   Median :139.0   Median :32.60   Median :10.50  
+##  Mean   :1.98   Mean   :4.128   Mean   :138.6   Mean   :32.71   Mean   :11.54  
+##  3rd Qu.:2.20   3rd Qu.:4.500   3rd Qu.:141.0   3rd Qu.:37.20   3rd Qu.:14.30  
+##  Max.   :3.40   Max.   :6.200   Max.   :153.0   Max.   :52.10   Max.   :41.80  
+##  NA&#39;s   :1446   NA&#39;s   :1517    NA&#39;s   :1655    NA&#39;s   :1164    NA&#39;s   :1329   
+##     epi_week        epi_year   
+##  Min.   : 1.00   Min.   :2110  
+##  1st Qu.:14.00   1st Qu.:2132  
+##  Median :27.00   Median :2152  
+##  Mean   :26.64   Mean   :2152  
+##  3rd Qu.:40.00   3rd Qu.:2172  
+##  Max.   :53.00   Max.   :2210  
+## </code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li><p>Impute missing values by <code>miceRanger</code> (request <span class="math inline">\(m=3\)</span> data sets). This step is computational intensive. Make sure to save the imputation results as a file. Hint: Setting <code>max.depth=10</code> in the <code>miceRanger</code> function may cut some computing time.</p></li>
-<li><p>Make imputation diagnostic plots and explain what they mean.</p></li>
-<li><p>Choose one of the imputed data sets to be used in Q2. This is <strong>not</strong> a good idea to use just one imputed data set or to average multiple imputed data sets. Explain in a couple of sentences what the correct Multiple Imputation strategy is.</p></li>
+<li>Impute missing values by <code>miceRanger</code> (request <span class="math inline">\(m=3\)</span> data sets). This step is computational intensive. Make sure to save the imputation results as a file. Hint: Setting <code>max.depth=10</code> in the <code>miceRanger</code> function may cut some computing time.</li>
 </ol>
+<p><strong>Solution:</strong></p>
+<ol start="5" style="list-style-type: decimal">
+<li>Make imputation diagnostic plots and explain what they mean.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+<p>{r} plotModelError(micedata)</p>
+<pre><code>
+From the model error plot, for the heart rate variables, sodium, hematocrit and wbc, which are less well
+captured by the model.
+
+{r}
+plotDistributions(micedata,
+                  vars=&#39;allNumeric&#39;)</code></pre>
+<p>From the numerical variables, heart rate and respiratory rate both are less skewed, but for sodium, which got a higher spread from the original data.</p>
+<p>{r} plotDistributions(micedata, vars=‘allCategorical’)</p>
+<pre><code>
+From the categorical variables, there are  less married  and more single people. So the model thinks that
+for single stauts, they are more likely to have missing their marital status.
+
+
+6.Choose one of the imputed data sets to be used in Q2. This is **not** a good idea to use just one imputed
+data set or to average multiple imputed data sets. Explain in a couple of sentences what the correct Multiple
+Imputation strategy is.
+
+**Solution:**
+
+{r, eval = FALSE}
+d_lis &lt;- completeData(micedata)
+datam &lt;- 
+  lapply(seq_along(d_lis),
+         function(i) model.matrix(mort30 ~., data = d_lis[[i]]))
+dataname &lt;- colnames(datam[[1]])
+datam &lt;- array(unlist(datam), 
+                   dim = c(nrow(datam[[1]]),
+                           ncol(datam[[1]]),3))
+datamice &lt;- rowMeans(datam, dims = 2) %&gt;%
+  as.data.frame()
+names(datamice) &lt;- dataname
+write_csv(datamice, &quot;datamice.csv&quot;)</code></pre>
 </div>
 <div id="q2.-predicting-30-day-mortality" class="section level2">
 <h2>Q2. Predicting 30-day mortality</h2>
