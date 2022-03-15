@@ -204,7 +204,15 @@ pre code {
 <pre class="r"><code>suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(lubridate))
 suppressPackageStartupMessages(library(miceRanger))
-library(kableExtra)</code></pre>
+library(kableExtra)
+library(SmartEDA)
+library(caret)</code></pre>
+<pre><code>## Loading required package: lattice</code></pre>
+<pre><code>## 
+## Attaching package: &#39;caret&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     lift</code></pre>
 <div id="q1.-missing-data" class="section level2">
 <h2>Q1. Missing data</h2>
 <p>Through the Shiny app developed in HW3, we observe abundant missing values in the MIMIC-IV ICU cohort we created. In this question, we use multiple imputation to obtain a data set without missing values.</p>
@@ -239,10 +247,10 @@ rmvar &lt;- c(&quot;subject_id&quot;, &quot;hadm_id&quot;,
              &quot;edouttime&quot;,
              &quot;hospital_expire_flag&quot;,
              &quot;anchor_year&quot;,&quot;anchor_year_group&quot;,
-             &quot;dod&quot;)
+             &quot;dod&quot;,&quot;anchor_age&quot;,&quot;admit_to_death&quot;,&quot;le50960&quot;)
 data &lt;- data %&gt;% select(-any_of(rmvar))
 print(data, width = Inf)</code></pre>
-<pre><code>## # A tibble: 7,917 × 28
+<pre><code>## # A tibble: 7,917 × 25
 ##    first_careunit                               admittime          
 ##    &lt;chr&gt;                                        &lt;dttm&gt;             
 ##  1 Neuro Stepdown                               2115-11-02 18:38:00
@@ -267,42 +275,42 @@ print(data, width = Inf)</code></pre>
 ##  8 OBSERVATION ADMIT EMERGENCY ROOM         Other     ENGLISH  WIDOWED       
 ##  9 ELECTIVE          PHYSICIAN REFERRAL     Medicare  ENGLISH  SINGLE        
 ## 10 OBSERVATION ADMIT EMERGENCY ROOM         Other     ?        WIDOWED       
-##    ethnicity              gender anchor_age le50931 le50983 le50912 le50902
-##    &lt;chr&gt;                  &lt;chr&gt;       &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
-##  1 WHITE                  F              57     135     138     0.4      98
-##  2 WHITE                  F              32     112     137     0.5     104
-##  3 WHITE                  M              53     219     136     0.8      99
-##  4 WHITE                  F              68      89     137     0.4      97
-##  5 WHITE                  M              65     111     142     0.8      98
-##  6 BLACK/AFRICAN AMERICAN F              78     125     145     0.8     109
-##  7 WHITE                  F              45      97     141     1       107
-##  8 WHITE                  F              84     163     145     0.7     106
-##  9 WHITE                  F              73     149     138     0.5     112
-## 10 HISPANIC/LATINO        F              84     163     139     1        99
-##    le50893 le50960 le50882 le51301 le50971 le51221 le220210 le220181 le223761
-##      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-##  1     9.2     1.6      26     9.2     4.3    31.5       23       97     98.6
-##  2     9.1     1.9      23    16.9     4.5    34.4       14       74     97.9
-##  3     8.5     1.8      25    12.7     5.2    35.1       17       91    100. 
-##  4     8.1     1.7      26     7.1     3.1    35.6       13      100     99.1
-##  5     9.5     2.1      30     7.2     3.7    31.5       20       92     98.1
-##  6     8.8     1.7      22     9       3.7    36.3       19       98     97.6
-##  7     8.9     2.2      24     6.8     4.5    38.3       19       78     97.9
-##  8     8.8     2.2      23     7.2     3.6    40.2       20       86     98.3
-##  9     8.2     2.7      26    13.1     3.8    24.6       20       57     97.2
-## 10    10.5     1.6      23    10.4     4.9    41.2       27      111     98  
-##    le220045 le220179 age_hadm admit_to_death thirty_day_mort
-##       &lt;dbl&gt;    &lt;dbl&gt;    &lt;int&gt;          &lt;int&gt;           &lt;dbl&gt;
-##  1       96      132       57             39               0
-##  2       85       96       32            414               0
-##  3       85      138       53           2935               0
-##  4       97      130       71             43               0
-##  5       83      120       72            335               0
-##  6       89      140       81            676               0
-##  7       74      122       45             59               0
-##  8       83      149       84            149               0
-##  9       80       94       73           3998               0
-## 10       95      149       84             52               0
+##    ethnicity              gender le50931 le50983 le50912 le50902 le50893 le50882
+##    &lt;chr&gt;                  &lt;chr&gt;    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+##  1 WHITE                  F          135     138     0.4      98     9.2      26
+##  2 WHITE                  F          112     137     0.5     104     9.1      23
+##  3 WHITE                  M          219     136     0.8      99     8.5      25
+##  4 WHITE                  F           89     137     0.4      97     8.1      26
+##  5 WHITE                  M          111     142     0.8      98     9.5      30
+##  6 BLACK/AFRICAN AMERICAN F          125     145     0.8     109     8.8      22
+##  7 WHITE                  F           97     141     1       107     8.9      24
+##  8 WHITE                  F          163     145     0.7     106     8.8      23
+##  9 WHITE                  F          149     138     0.5     112     8.2      26
+## 10 HISPANIC/LATINO        F          163     139     1        99    10.5      23
+##    le51301 le50971 le51221 le220210 le220181 le223761 le220045 le220179 age_hadm
+##      &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;int&gt;
+##  1     9.2     4.3    31.5       23       97     98.6       96      132       57
+##  2    16.9     4.5    34.4       14       74     97.9       85       96       32
+##  3    12.7     5.2    35.1       17       91    100.        85      138       53
+##  4     7.1     3.1    35.6       13      100     99.1       97      130       71
+##  5     7.2     3.7    31.5       20       92     98.1       83      120       72
+##  6     9       3.7    36.3       19       98     97.6       89      140       81
+##  7     6.8     4.5    38.3       19       78     97.9       74      122       45
+##  8     7.2     3.6    40.2       20       86     98.3       83      149       84
+##  9    13.1     3.8    24.6       20       57     97.2       80       94       73
+## 10    10.4     4.9    41.2       27      111     98         95      149       84
+##    thirty_day_mort
+##              &lt;dbl&gt;
+##  1               0
+##  2               0
+##  3               0
+##  4               0
+##  5               0
+##  6               0
+##  7               0
+##  8               0
+##  9               0
+## 10               0
 ## # … with 7,907 more rows</code></pre>
 <pre class="r"><code>rmcatg &lt;- c( &quot;thirty_day_mort&quot;,
              &quot;first_careunit&quot;,
@@ -726,6 +734,7 @@ write_csv(datamice, &quot;datamice.csv&quot;)</code></pre>
 <ol style="list-style-type: decimal">
 <li>Partition data into 80% training set and 20% test set. Stratify partitioning according the 30-day mortality status.</li>
 </ol>
+<p><strong>Solution:</strong></p>
 <pre class="r"><code>icu &lt;- read_csv(&quot;~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw4/data.csv&quot;)</code></pre>
 <pre><code>## Rows: 7917 Columns: 28
 ## ── Column specification ────────────────────────────────────────────────────────
@@ -748,19 +757,21 @@ test &lt;- rbind(icu_test, icu_testno)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Train the models using the training set.</li>
 </ol>
-<pre class="r"><code>library(kableExtra)
+<p><strong>Solution:</strong></p>
+<pre class="r"><code>#Method 1: logistic regression ----
+library(kableExtra)
 trainsubset &lt;- train %&gt;%
   select(&quot;gender&quot;, &quot;age_hadm&quot;, &quot;marital_status&quot;, &quot;ethnicity&quot;, &quot;le50893&quot;, 
-         &quot;le50902&quot;, &quot;le50912&quot;,&quot;le50931&quot;, &quot;le50971&quot;,&quot;le50983&quot;, &quot;le51221&quot;,
-         &quot;le51301&quot;,&quot;le220045&quot;,&quot;le220179&quot;,&quot;le220181&quot;,&quot;le220210&quot;, &quot;le223761&quot;,
+         &quot;le50902&quot;, &quot;le50912&quot;,&quot;le50931&quot;,&quot;le50983&quot;, &quot;le51221&quot;,&quot;le220045&quot;,
+         &quot;le220179&quot;,&quot;le220181&quot;,&quot;le220210&quot;, &quot;le223761&quot;,
          &quot;thirty_day_mort&quot;) %&gt;%
   mutate(&quot;marital_status&quot; = as.factor(marital_status),
-             &quot;ethnicity&quot; = as.factor(ethnicity),
-             &quot;female&quot; = ifelse(gender == &quot;F&quot;, 1, 0)) %&gt;%
+         &quot;ethnicity&quot; = as.factor(ethnicity),
+         &quot;female&quot; = ifelse(gender == &quot;F&quot;, 1, 0)) %&gt;%
   select(-&quot;gender&quot;) %&gt;%
   select(&quot;female&quot;, everything())
 log_reg &lt;- glm(as.factor(thirty_day_mort) ~ ., data = trainsubset, 
-                  family = binomial (link = &quot;logit&quot;))
+               family = binomial (link = &quot;logit&quot;))
 kable(log_reg$coefficients, digits=3)</code></pre>
 <table>
 <thead>
@@ -778,7 +789,7 @@ x
 (Intercept)
 </td>
 <td style="text-align:right;">
--0.562
+0.667
 </td>
 </tr>
 <tr>
@@ -786,7 +797,7 @@ x
 female
 </td>
 <td style="text-align:right;">
-0.119
+0.099
 </td>
 </tr>
 <tr>
@@ -794,7 +805,7 @@ female
 age_hadm
 </td>
 <td style="text-align:right;">
-0.024
+0.025
 </td>
 </tr>
 <tr>
@@ -802,7 +813,7 @@ age_hadm
 marital_statusMARRIED
 </td>
 <td style="text-align:right;">
-0.019
+0.035
 </td>
 </tr>
 <tr>
@@ -810,7 +821,7 @@ marital_statusMARRIED
 marital_statusSINGLE
 </td>
 <td style="text-align:right;">
-0.067
+0.085
 </td>
 </tr>
 <tr>
@@ -818,7 +829,7 @@ marital_statusSINGLE
 marital_statusWIDOWED
 </td>
 <td style="text-align:right;">
--0.009
+0.039
 </td>
 </tr>
 <tr>
@@ -826,7 +837,7 @@ marital_statusWIDOWED
 ethnicityASIAN
 </td>
 <td style="text-align:right;">
-0.640
+0.810
 </td>
 </tr>
 <tr>
@@ -834,7 +845,7 @@ ethnicityASIAN
 ethnicityBLACK/AFRICAN AMERICAN
 </td>
 <td style="text-align:right;">
-0.427
+0.566
 </td>
 </tr>
 <tr>
@@ -842,7 +853,7 @@ ethnicityBLACK/AFRICAN AMERICAN
 ethnicityHISPANIC/LATINO
 </td>
 <td style="text-align:right;">
-0.727
+0.814
 </td>
 </tr>
 <tr>
@@ -850,7 +861,7 @@ ethnicityHISPANIC/LATINO
 ethnicityNOT REGISTERED
 </td>
 <td style="text-align:right;">
-1.871
+2.031
 </td>
 </tr>
 <tr>
@@ -858,7 +869,7 @@ ethnicityNOT REGISTERED
 ethnicityOTHER
 </td>
 <td style="text-align:right;">
-0.923
+1.086
 </td>
 </tr>
 <tr>
@@ -866,7 +877,7 @@ ethnicityOTHER
 ethnicityWHITE
 </td>
 <td style="text-align:right;">
-0.864
+1.007
 </td>
 </tr>
 <tr>
@@ -874,7 +885,7 @@ ethnicityWHITE
 le50893
 </td>
 <td style="text-align:right;">
--0.254
+-0.237
 </td>
 </tr>
 <tr>
@@ -882,7 +893,7 @@ le50893
 le50902
 </td>
 <td style="text-align:right;">
--0.040
+-0.034
 </td>
 </tr>
 <tr>
@@ -890,7 +901,7 @@ le50902
 le50912
 </td>
 <td style="text-align:right;">
-0.058
+0.107
 </td>
 </tr>
 <tr>
@@ -903,18 +914,10 @@ le50931
 </tr>
 <tr>
 <td style="text-align:left;">
-le50971
-</td>
-<td style="text-align:right;">
-0.166
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 le50983
 </td>
 <td style="text-align:right;">
-0.042
+0.031
 </td>
 </tr>
 <tr>
@@ -922,15 +925,7 @@ le50983
 le51221
 </td>
 <td style="text-align:right;">
-0.025
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le51301
-</td>
-<td style="text-align:right;">
-0.029
+0.032
 </td>
 </tr>
 <tr>
@@ -946,7 +941,7 @@ le220045
 le220179
 </td>
 <td style="text-align:right;">
--0.006
+-0.007
 </td>
 </tr>
 <tr>
@@ -962,7 +957,7 @@ le220181
 le220210
 </td>
 <td style="text-align:right;">
-0.032
+0.033
 </td>
 </tr>
 <tr>
@@ -970,7 +965,7 @@ le220210
 le223761
 </td>
 <td style="text-align:right;">
--0.042
+-0.041
 </td>
 </tr>
 </tbody>
@@ -978,7 +973,10 @@ le223761
 <ol start="3" style="list-style-type: decimal">
 <li>Compare model prediction performance on the test set.</li>
 </ol>
-<p>library(caret) # Compare model performance in the test data # First, see logit model A test_log &lt;- predict(log_reg, newdata = trainsubset) confusionMatrix(test_log, trainsubset$thirty_day_mort) ```</p>
+<p><strong>Solutions</strong></p>
+<p>``{r}</p>
+<p>#logistic regression</p>
+<p>log_test = data.frame(probs = predict(log_reg, test, type =“response”)) log_pred = log_test %&gt;% mutate(pred = ifelse(probs &gt; .5, 1, 0)) confusionMatrix(as.factor(log_pred<span class="math inline">\(pred),test\)</span>trainsubset.thirty_day_mort) ```</p>
 </div>
 
 

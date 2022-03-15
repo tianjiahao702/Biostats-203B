@@ -23,6 +23,8 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(lubridate))
 suppressPackageStartupMessages(library(miceRanger))
 library(kableExtra)
+library(SmartEDA)
+library(caret)
 ```
 
 ## Q1. Missing data
@@ -75,7 +77,6 @@ imputed. Repeat, starting from the imputed dataset, until convergence.
 **Solution:**
 
 ```{r}
-
 path <- "~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw4"
 data <- readRDS("~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw3/mimic_icu_cohort.rds")
 rmvar <- c("subject_id", "hadm_id",
@@ -88,7 +89,7 @@ rmvar <- c("subject_id", "hadm_id",
              "edouttime",
              "hospital_expire_flag",
              "anchor_year","anchor_year_group",
-             "dod")
+             "dod","anchor_age","admit_to_death","le50960")
 data <- data %>% select(-any_of(rmvar))
 print(data, width = Inf)
 ```
@@ -291,6 +292,8 @@ Develop at least two analytic approaches for predicting the 30-day mortality of 
 
 1. Partition data into 80% training set and 20% test set. Stratify partitioning according the 30-day mortality status.
 
+**Solution:**
+
 ```{r}
 icu <- read_csv("~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw4/data.csv")
 icu_30 <- icu %>% filter(thirty_day_mort == 1)
@@ -307,30 +310,38 @@ test <- rbind(icu_test, icu_testno)
 
 2. Train the models using the training set.
 
+**Solution:**
+  
 ```{r}
+#Method 1: logistic regression ----
 library(kableExtra)
 trainsubset <- train %>%
   select("gender", "age_hadm", "marital_status", "ethnicity", "le50893", 
-         "le50902", "le50912","le50931", "le50971","le50983", "le51221",
-         "le51301","le220045","le220179","le220181","le220210", "le223761",
+         "le50902", "le50912","le50931","le50983", "le51221","le220045",
+         "le220179","le220181","le220210", "le223761",
          "thirty_day_mort") %>%
   mutate("marital_status" = as.factor(marital_status),
-             "ethnicity" = as.factor(ethnicity),
-             "female" = ifelse(gender == "F", 1, 0)) %>%
+         "ethnicity" = as.factor(ethnicity),
+         "female" = ifelse(gender == "F", 1, 0)) %>%
   select(-"gender") %>%
   select("female", everything())
 log_reg <- glm(as.factor(thirty_day_mort) ~ ., data = trainsubset, 
-                  family = binomial (link = "logit"))
+               family = binomial (link = "logit"))
 kable(log_reg$coefficients, digits=3)
 ```
 
 3. Compare model prediction performance on the test set.
 
+**Solutions**
 
+``{r}
 
-library(caret)
-# Compare model performance in the test data
-# First, see logit model A
-test_log <- predict(log_reg, newdata = trainsubset)
-confusionMatrix(test_log, trainsubset$thirty_day_mort)
+#logistic regression
+
+log_test = data.frame(probs = predict(log_reg, test, type ="response"))
+log_pred = log_test %>%
+  mutate(pred = ifelse(probs > .5, 1, 0))
+confusionMatrix(as.factor(log_pred$pred),test$trainsubset.thirty_day_mort)
 ```
+
+
