@@ -61,7 +61,9 @@ in this scenario, and so no imputation method would do a decent job of approxima
 imputation approaches, including multiple imputation, may help to reduce bias in the entire case analysis, no
 method can completely remove bias.
 
-In conclusion, in the same dataset, variables that are MCAR which don't need to imputation, and others that are MAR so we can successfully impute them, and variables that are MNAR which there is no imputation would recover the true distribution. 
+In conclusion, in the same dataset, variables that are MCAR which don't need to imputation, and others 
+that are MAR so we can successfully impute them, and variables that are MNAR which there is no imputation would
+recover the true distribution. 
 
 
 2. Explain in a couple of sentences how the Multiple Imputation by Chained Equations (MICE) work.
@@ -78,7 +80,9 @@ imputed. Repeat, starting from the imputed dataset, until convergence.
 
 ```{r}
 path <- "~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw4"
-data <- readRDS("~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw3/mimic_icu_cohort.rds")
+data <- readRDS(
+  "~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw3/mimic_icu_cohort.rds"
+  )
 rmvar <- c("subject_id", "hadm_id",
              "stay_id", "last_careunit",
              "intime",
@@ -90,7 +94,8 @@ rmvar <- c("subject_id", "hadm_id",
              "hospital_expire_flag",
              "anchor_year","anchor_year_group",
              "dod","anchor_age","admit_to_death","le50960")
-data <- data %>% select(-any_of(rmvar))
+data <- data %>% 
+  select(-any_of(rmvar))
 print(data, width = Inf)
 ```
 
@@ -218,8 +223,8 @@ captured by the model.
 plotDistributions(micedata, vars='allNumeric')
 ```
 
-From the numerical variables, heart rate and respiratory rate both are less skewed, but for sodium, which got
-a higher spread from the original data.
+From the numerical variables, heart rate and respiratory rate both are less skewed, but for sodium, 
+which got a higher spread from the original data.
 
 **Solution:**
 
@@ -227,7 +232,8 @@ a higher spread from the original data.
 plotVarConvergence(micedata)
 ```
 
-From the convergence plot, shows the mean and standard deviation of the imputed values across datasets. It looks okay, so overall it likely would benefit from more iterations. 
+From the convergence plot, shows the mean and standard deviation of the imputed values across datasets. 
+It looks okay, so overall it likely would benefit from more iterations. 
 
 **Solution:**
 
@@ -238,7 +244,6 @@ plotVarImportance(micedata,
                   tl.col = "black",
                   number.cex = 0.4,
                   cl.pos = "n",
-                  #cl.align.text = "l", 
                   type = "upper")
 ```
 
@@ -275,7 +280,9 @@ Average numerical and categorical imputed variables from the dataset, then re-as
 ```{r, eval = FALSE}
 d_lis <- completeData(micedata)
 datam <- lapply(seq_along(d_lis),
-                function(i) model.matrix(thirty_day_mort ~., data = d_lis[[i]]))
+                function(i) model.matrix(
+                  thirty_day_mort ~., data = d_lis[[i]])
+                )
 dataname <- colnames(datam[[1]])
 datam <- array(unlist(datam), 
                dim = c(nrow(datam[[1]]),ncol(datam[[1]]),3))
@@ -296,8 +303,10 @@ Develop at least two analytic approaches for predicting the 30-day mortality of 
 
 ```{r}
 icu <- read_csv("~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw4/data.csv")
-icu_30 <- icu %>% filter(thirty_day_mort == 1)
-icu_30no <- icu %>% filter(thirty_day_mort == 0)
+icu_30 <- icu %>% 
+  filter(thirty_day_mort == 1)
+icu_30no <- icu %>% 
+  filter(thirty_day_mort == 0)
 icu2 <- sample(1:nrow(icu_30), size  = 0.8*nrow(icu_30))
 icu3 <- icu_30[icu2, ]
 icu_test <- icu_30[-icu2, ]
@@ -332,7 +341,7 @@ kable(log_reg$coefficients, digits=3)
 
 3. Compare model prediction performance on the test set.
 
-**Solutions**
+**Solutions:**
 
 ``{r}
 
@@ -344,4 +353,5 @@ log_pred = log_test %>%
 confusionMatrix(as.factor(log_pred$pred),test$trainsubset.thirty_day_mort)
 ```
 
+**Based on the results, the model prediction performance on the test set is similar.**
 
