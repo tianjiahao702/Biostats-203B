@@ -718,19 +718,10 @@ save.image(&quot;~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw4/mice.RData
 <p>From the categorical variables, there are less married and more single people. So the model thinks that for single stauts, they are more likely to have missing their marital status.</p>
 <p>6.Choose one of the imputed data sets to be used in Q2. This is <strong>not</strong> a good idea to use just one imputed data set or to average multiple imputed data sets. Explain in a couple of sentences what the correct Multiple Imputation strategy is.</p>
 <p><strong>Solution:</strong></p>
-<p>Average numerical and categorical imputed variables from the dataset, then re-assign the names.</p>
-<pre class="r"><code>d_lis &lt;- completeData(micedata)
-datam &lt;- lapply(seq_along(d_lis),
-                function(i) model.matrix(
-                  thirty_day_mort ~., data = d_lis[[i]])
-                )
-dataname &lt;- colnames(datam[[1]])
-datam &lt;- array(unlist(datam), 
-               dim = c(nrow(datam[[1]]),ncol(datam[[1]]),3))
-datamice &lt;- rowMeans(datam, dims = 2) %&gt;%
-  as.data.frame()
-names(datamice) &lt;- dataname
-write_csv(datamice, &quot;datamice.csv&quot;)</code></pre>
+<p>With this approach, rather than replacing missing values with a single value, we use the distribution of the observed data to estimate multiple possible values for the data points. This allows us to account for the uncertainty around the true value, and obtain approximately unbiased estimates. This method is also more flexible since it can be applied to any kind of data and any kind of analysis.</p>
+<pre class="r"><code>data2 &lt;- completeData(micedata, datasets = 3)
+data2 &lt;- data.frame(data2) %&gt;%
+write_rds(&quot;data2.rds&quot;)</code></pre>
 </div>
 <div id="q2.-predicting-30-day-mortality" class="section level2">
 <h2>Q2. Predicting 30-day mortality</h2>
@@ -739,251 +730,60 @@ write_csv(datamice, &quot;datamice.csv&quot;)</code></pre>
 <li>Partition data into 80% training set and 20% test set. Stratify partitioning according the 30-day mortality status.</li>
 </ol>
 <p><strong>Solution:</strong></p>
-<pre class="r"><code>icu &lt;- read_csv(&quot;~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw4/data.csv&quot;)</code></pre>
-<pre><code>## Rows: 7917 Columns: 25
-## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr  (7): first_careunit, admission_type, admission_location, insurance, mar...
-## dbl (18): le50931, le50983, le50912, le50902, le50893, le50882, le51221, le2...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>icu_30 &lt;- icu %&gt;% 
-  filter(thirty_day_mort == 1)
-icu_30no &lt;- icu %&gt;% 
-  filter(thirty_day_mort == 0)
-icu2 &lt;- sample(1:nrow(icu_30), size  = 0.8*nrow(icu_30))
-icu3 &lt;- icu_30[icu2, ]
-icu_test &lt;- icu_30[-icu2, ]
-icu2no &lt;- sample(1:nrow(icu_30no), size  = 0.8*nrow(icu_30no))
-icu3no &lt;- icu_30no[icu2no, ]
-icu_testno &lt;- icu_30no[-icu2no, ]
-train &lt;- rbind(icu3, icu3no)
-test &lt;- rbind(icu_test, icu_testno)</code></pre>
+<pre class="r"><code>icu &lt;- read_rds(
+  &quot;~/Desktop/Biostats 203B/biostat-203b-2022-winter/hw4/data2.rds&quot;
+  )
+library(caret)
+intrain&lt;-createDataPartition(y=icu$Dataset_3.thirty_day_mort,p=0.8,list=FALSE)
+training&lt;-icu[intrain,]
+testing&lt;-icu[-intrain,]</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Train the models using the training set.</li>
 </ol>
 <p><strong>Solution:</strong></p>
-<pre class="r"><code>#Method 1: logistic regression ----
-library(kableExtra)
-trainsubset &lt;- train %&gt;%
-  select(&quot;gender&quot;, &quot;age_hadm&quot;, &quot;marital_status&quot;, &quot;ethnicity&quot;, &quot;le50893&quot;, 
-         &quot;le50902&quot;, &quot;le50912&quot;,&quot;le50931&quot;,&quot;le50983&quot;, &quot;le51221&quot;,&quot;le220045&quot;,
-         &quot;le220179&quot;,&quot;le220181&quot;,&quot;le220210&quot;, &quot;le223761&quot;,
-         &quot;thirty_day_mort&quot;) %&gt;%
-  mutate(&quot;marital_status&quot; = as.factor(marital_status),
-         &quot;ethnicity&quot; = as.factor(ethnicity),
-         &quot;female&quot; = ifelse(gender == &quot;F&quot;, 1, 0)) %&gt;%
-  select(-&quot;gender&quot;) %&gt;%
-  select(&quot;female&quot;, everything())
-log_reg &lt;- glm(as.factor(thirty_day_mort) ~ ., data = trainsubset, 
-               family = binomial (link = &quot;logit&quot;))
-kable(log_reg$coefficients, digits=3)</code></pre>
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">
-</th>
-<th style="text-align:right;">
-x
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-(Intercept)
-</td>
-<td style="text-align:right;">
-0.667
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-female
-</td>
-<td style="text-align:right;">
-0.099
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-age_hadm
-</td>
-<td style="text-align:right;">
-0.025
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-marital_statusMARRIED
-</td>
-<td style="text-align:right;">
-0.035
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-marital_statusSINGLE
-</td>
-<td style="text-align:right;">
-0.085
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-marital_statusWIDOWED
-</td>
-<td style="text-align:right;">
-0.039
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ethnicityASIAN
-</td>
-<td style="text-align:right;">
-0.810
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ethnicityBLACK/AFRICAN AMERICAN
-</td>
-<td style="text-align:right;">
-0.566
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ethnicityHISPANIC/LATINO
-</td>
-<td style="text-align:right;">
-0.814
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ethnicityNOT REGISTERED
-</td>
-<td style="text-align:right;">
-2.031
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ethnicityOTHER
-</td>
-<td style="text-align:right;">
-1.086
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-ethnicityWHITE
-</td>
-<td style="text-align:right;">
-1.007
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le50893
-</td>
-<td style="text-align:right;">
--0.237
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le50902
-</td>
-<td style="text-align:right;">
--0.034
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le50912
-</td>
-<td style="text-align:right;">
-0.107
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le50931
-</td>
-<td style="text-align:right;">
-0.001
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le50983
-</td>
-<td style="text-align:right;">
-0.031
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le51221
-</td>
-<td style="text-align:right;">
-0.032
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le220045
-</td>
-<td style="text-align:right;">
-0.007
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le220179
-</td>
-<td style="text-align:right;">
--0.007
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le220181
-</td>
-<td style="text-align:right;">
-0.004
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le220210
-</td>
-<td style="text-align:right;">
-0.033
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-le223761
-</td>
-<td style="text-align:right;">
--0.041
-</td>
-</tr>
-</tbody>
-</table>
+<pre class="r"><code>tranigset = glm(Dataset_3.thirty_day_mort~.,
+              data = training,
+              family = binomial)</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Compare model prediction performance on the test set.</li>
 </ol>
 <p><strong>Solutions:</strong></p>
-<p>``{r}</p>
-<p>#logistic regression</p>
-<p>log_test = data.frame(probs = predict(log_reg, test, type =“response”)) log_pred = log_test %&gt;% mutate(pred = ifelse(probs &gt; .5, 1, 0)) confusionMatrix(as.factor(log_pred<span class="math inline">\(pred),test\)</span>trainsubset.thirty_day_mort) ```</p>
-<p><strong>Based on the results, the model prediction performance on the test set is similar.</strong></p>
+<pre class="r"><code>testset = predict(tranigset,testing, type=&quot;response&quot;)
+testset1 &lt;- data.frame(testset) %&gt;%
+   mutate(pred = ifelse(testset&gt;.5, 1, 0))
+head(testset)</code></pre>
+<pre><code>##         1         3         8        13        14        22 
+## 0.5319813 0.6420272 0.7147431 0.1562383 0.6038978 0.4195699</code></pre>
+<pre class="r"><code>testset1$pred &lt;- factor(testset1$pred)
+testing$Dataset_3.thirty_day_mort &lt;- factor(testing$Dataset_3.thirty_day_mort)
+confusionMatrix(testset1$pred, testing$Dataset_3.thirty_day_mort)</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   0   1
+##          0 226 123
+##          1 284 950
+##                                           
+##                Accuracy : 0.7429          
+##                  95% CI : (0.7206, 0.7643)
+##     No Information Rate : 0.6778          
+##     P-Value [Acc &gt; NIR] : 9.509e-09       
+##                                           
+##                   Kappa : 0.3582          
+##                                           
+##  Mcnemar&#39;s Test P-Value : 2.176e-15       
+##                                           
+##             Sensitivity : 0.4431          
+##             Specificity : 0.8854          
+##          Pos Pred Value : 0.6476          
+##          Neg Pred Value : 0.7699          
+##              Prevalence : 0.3222          
+##          Detection Rate : 0.1428          
+##    Detection Prevalence : 0.2205          
+##       Balanced Accuracy : 0.6643          
+##                                           
+##        &#39;Positive&#39; Class : 0               
+## </code></pre>
 </div>
 
 
