@@ -25,16 +25,16 @@ os <- sessionInfo()$running
 if (str_detect(os, "Linux")) {
   mimic_path <- "/mnt/mimiciv/1.0"
 } else if (str_detect(os, "macOS")) {
-  mimic_path <- "/users/huazhou/Documents/Box Sync/MIMIC/mimi-iv-1.0"
+  mimic_path <- "/Users/jiahaotian/Desktop/Biostats 203B/mimic-iv-1.0"
 }
 ```
 
 In this exercise, we use tidyverse (ggpot2, dplyr, etc) to explore the [MIMIC-IV](https://mimic.mit.edu/docs/iv/) data introduced in [homework 1](https://ucla-biostat-203b.github.io/2022winter/hw/hw1/hw1.html) and to build a cohort of ICU stays.
 
-```{r}
-# tree -s -L 2 /Users/huazhou/Documents/Box\ Sync/MIMIC/mimic-iv-1.0
+
+# tree -s -L 2 /Users/jiahaotian/Desktop/Biostats 203B/mimic-iv-1.0
 system(str_c("tree -s -L 2 ", shQuote(mimic_path)), intern = TRUE)
-```
+
 
 ## Q1. `read.csv` (base R) vs `read_csv` (tidyverse) vs `fread` (data.table)
 
@@ -48,20 +48,21 @@ For later questions, we stick to the tidyverse.
 
 ```{r}
 system.time({
-  read.csv(gzfile( "/mnt/mimiciv/1.0/core/admissions.csv.gz"))
-  })
+  read.csv(str_c(mimic_path, "/core/admissions.csv.gz"))
+})
+```
+
+
+```{r}
+system.time({
+  read_csv(str_c(mimic_path, "/core/admissions.csv.gz"))
+})
 ```
 
 ```{r}
 system.time({
-  read_csv(gzfile( "/mnt/mimiciv/1.0/core/admissions.csv.gz"))
-  })
-```
-
-```{r}
-system.time({
-  fread("/mnt/mimiciv/1.0/core/admissions.csv.gz")
-  })
+  fread(str_c(mimic_path, "/core/admissions.csv.gz"))
+})
 ```
 
 **Solution:**
@@ -88,7 +89,7 @@ system(
 **Solution:**
 
 ```{r}
-icustays_tab <- read_csv(gzfile( "/mnt/mimiciv/1.0/icu/icustays.csv.gz")) %>%
+icustays_tab <- read_csv(str_c(mimic_path, "/icu/icustays.csv.gz")) %>%
   print(width = Inf)
 ```
 
@@ -142,8 +143,12 @@ system(
 **Solution:**
 
 ```{r}
+<<<<<<< HEAD
+admissions_tab <- read_csv(str_c(mimic_path, "/core/admissions.csv.gz")) %>%
+=======
 admissions_tab <- read_csv(
   str_c("/mnt/mimiciv/1.0/core/admissions.csv.gz")) %>%
+>>>>>>> 9e63d410130a5d0290e194273450def245bfd981
   print(width = Inf)
 ```
 
@@ -164,6 +169,10 @@ admissions_tab <- semi_join(admissions_tab, icustays_tab,
 - admission week day  
 - admission hour (anything unusual?)  
 
+<<<<<<< HEAD
+The declined stats are shown from 0:00 a.m. to 6:00 a.m. Admissions are increasing from 6:00 a.m. to 7:00 a.m., but around 9:00 a.m., they start to decrease. There is a steady increase from 9:00 a.m. to 6:00 p.m. And later, from 6:00 p.m. to 11:00 p.m., there is a decrease. The unusual thing, I think, is that the admissions show up very frequently around 0:00 a.m.
+
+=======
 **Solution: admission year**  
 
 ```{r}
@@ -225,6 +234,7 @@ admissions_tab %>%
   scale_x_continuous(breaks = seq(0, 23, 4))
 ```
 
+>>>>>>> 9e63d410130a5d0290e194273450def245bfd981
 ## Q4. `patients` data
 
 Patient information is available in `patients.csv.gz`. See <https://mimic.mit.edu/docs/iv/modules/core/patients/> for details of each field in this file. The first 10 lines are
