@@ -277,8 +277,8 @@ Imputation strategy is.
 
 With this approach, rather than replacing missing values with a single value, we use the distribution of the
 observed data to estimate multiple possible values for the data points. This allows us to account for the
-uncertainty around the true value, and obtain approximately unbiased estimates. This method is also more flexible
-since it can be applied to any kind of data and any kind of analysis.
+uncertainty around the true value, and obtain approximately unbiased estimates. This method is also more 
+flexible since it can be applied to any kind of data and any kind of analysis.
 
 ```{r, eval = FALSE}
 data2 <- completeData(micedata, datasets = 3)
